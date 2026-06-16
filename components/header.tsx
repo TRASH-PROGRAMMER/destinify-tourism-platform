@@ -66,9 +66,9 @@ export function Header() {
 
         <div className="hidden lg:flex lg:flex-1 lg:justify-end lg:gap-x-3">
           <Button variant="ghost" size="sm" asChild>
-            <Link href="/perfil">
+            <Link href="/iniciar-sesion">
               <User className="h-4 w-4 mr-2" />
-              Mi Perfil
+              Iniciar sesión
             </Link>
           </Button>
           <Button size="sm" asChild>
@@ -94,9 +94,9 @@ export function Header() {
             ))}
             <div className="mt-4 flex flex-col gap-2 pt-4 border-t border-border">
               <Button variant="outline" asChild className="w-full justify-start">
-                <Link href="/perfil">
+                <Link href="/iniciar-sesion">
                   <User className="h-4 w-4 mr-2" />
-                  Mi Perfil
+                  Iniciar sesión
                 </Link>
               </Button>
               <Button asChild className="w-full">
