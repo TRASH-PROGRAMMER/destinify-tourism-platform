@@ -1,28 +1,18 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { Accessibility } from "lucide-react"
 import { A11yProvider } from "./a11y-provider"
 import { ColorblindFilters } from "./colorblind-filters"
 import { AccessibilityMenu } from "./accessibility-menu"
+import { A11yShortcuts } from "./a11y-shortcuts"
 
 function AccessibilityButton() {
   const [open, setOpen] = useState(false)
 
-  // Keyboard shortcut: Alt + A
-  useEffect(() => {
-    const handler = (e: KeyboardEvent) => {
-      if (e.altKey && (e.key === "a" || e.key === "A")) {
-        e.preventDefault()
-        setOpen((o) => !o)
-      }
-    }
-    window.addEventListener("keydown", handler)
-    return () => window.removeEventListener("keydown", handler)
-  }, [])
-
   return (
     <>
+      <A11yShortcuts onToggleMenu={() => setOpen((o) => !o)} />
       <button
         type="button"
         onClick={() => setOpen(true)}
