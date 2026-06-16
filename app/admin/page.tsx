@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { DollarSign, CalendarCheck, Star, Package, ArrowRight, Bell } from "lucide-react"
+import { ArrowRight, Bell } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -47,25 +47,25 @@ export default function AdminDashboardPage() {
         <StatCard
           label="Ingresos del mes"
           value={formatCurrency(8200)}
-          icon={DollarSign}
+          icon="dollar"
           trend={{ value: "+10.8%", positive: true }}
         />
         <StatCard
           label="Reservas del mes"
           value="74"
-          icon={CalendarCheck}
+          icon="calendar"
           trend={{ value: "+10.4%", positive: true }}
         />
         <StatCard
           label="Calificación media"
           value="4.7"
-          icon={Star}
+          icon="star"
           trend={{ value: "+0.2", positive: true }}
         />
         <StatCard
           label="Servicios activos"
           value="3"
-          icon={Package}
+          icon="package"
           trend={{ value: "-1", positive: false }}
         />
       </section>

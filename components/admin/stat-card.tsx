@@ -1,19 +1,29 @@
 "use client"
 
-import { TrendingUp, TrendingDown } from "lucide-react"
+import { TrendingUp, TrendingDown, DollarSign, CalendarCheck, Star, Package } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
 
+const iconMap: Record<string, LucideIcon> = {
+  dollar: DollarSign,
+  calendar: CalendarCheck,
+  star: Star,
+  package: Package,
+}
+
+export type StatIconName = keyof typeof iconMap
+
 interface StatCardProps {
   label: string
   value: string
-  icon: LucideIcon
+  icon: StatIconName
   trend?: { value: string; positive: boolean }
   iconClassName?: string
 }
 
-export function StatCard({ label, value, icon: Icon, trend, iconClassName }: StatCardProps) {
+export function StatCard({ label, value, icon, trend, iconClassName }: StatCardProps) {
+  const Icon = iconMap[icon]
   return (
     <Card>
       <CardContent className="flex items-start justify-between p-5">
