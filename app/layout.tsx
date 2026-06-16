@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next'
 import { Inter, Outfit } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
+import { AccessibilityWidget } from '@/components/accessibility/accessibility-widget'
 import './globals.css'
 
 const inter = Inter({ 
@@ -55,7 +56,9 @@ export default function RootLayout({
   return (
     <html lang="es" className={`${inter.variable} ${outfit.variable}`}>
       <body className="font-sans antialiased bg-background">
-        {children}
+        <AccessibilityWidget>
+          {children}
+        </AccessibilityWidget>
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
     </html>
