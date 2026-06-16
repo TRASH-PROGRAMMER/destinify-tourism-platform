@@ -24,6 +24,7 @@ const navigation = {
     { name: "Contacto", href: "/contacto" },
   ],
   legal: [
+    { name: "Accesibilidad", href: "/accesibilidad" },
     { name: "Términos de servicio", href: "/terminos" },
     { name: "Política de privacidad", href: "/privacidad" },
     { name: "Cookies", href: "/cookies" },
