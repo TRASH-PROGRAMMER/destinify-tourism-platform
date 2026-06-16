@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next'
 import { Inter, Outfit } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import { AccessibilityWidget } from '@/components/accessibility/accessibility-widget'
+import { Toaster } from '@/components/ui/sonner'
 import './globals.css'
 
 const inter = Inter({ 
@@ -59,6 +60,7 @@ export default function RootLayout({
         <AccessibilityWidget>
           {children}
         </AccessibilityWidget>
+        <Toaster richColors position="top-center" />
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
     </html>

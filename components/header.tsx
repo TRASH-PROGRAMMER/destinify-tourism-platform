@@ -12,6 +12,7 @@ import {
   Calendar,
   Sparkles,
 } from "lucide-react"
+import { LanguageSwitcher } from "@/components/language-switcher"
 
 const navigation = [
   { name: "Destinos", href: "/destinos", icon: Compass },
@@ -64,7 +65,8 @@ export function Header() {
           ))}
         </div>
 
-        <div className="hidden lg:flex lg:flex-1 lg:justify-end lg:gap-x-3">
+        <div className="hidden lg:flex lg:flex-1 lg:justify-end lg:gap-x-3 lg:items-center">
+          <LanguageSwitcher />
           <Button variant="ghost" size="sm" asChild>
             <Link href="/iniciar-sesion">
               <User className="h-4 w-4 mr-2" />
@@ -93,6 +95,10 @@ export function Header() {
               </Link>
             ))}
             <div className="mt-4 flex flex-col gap-2 pt-4 border-t border-border">
+              <div className="flex items-center justify-between py-2">
+                <span className="text-sm font-medium text-foreground">Idioma del sistema</span>
+                <LanguageSwitcher />
+              </div>
               <Button variant="outline" asChild className="w-full justify-start">
                 <Link href="/iniciar-sesion">
                   <User className="h-4 w-4 mr-2" />

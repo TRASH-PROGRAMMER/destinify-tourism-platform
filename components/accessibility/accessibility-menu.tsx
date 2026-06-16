@@ -212,12 +212,26 @@ export function AccessibilityMenu({ open, onOpenChange }: { open: boolean; onOpe
                   checked={settings.highlightButtons}
                   onChange={(c) => setSetting("highlightButtons", c)}
                 />
-                <ToggleRow
-                  icon={<Sparkles className="h-4 w-4" />}
-                  label="Ocultar animaciones"
-                  checked={!settings.animations}
-                  onChange={(c) => setSetting("animations", !c)}
-                />
+                <div className="flex flex-col gap-3 rounded-lg border border-border bg-card p-4">
+                  <div className="flex items-center gap-3">
+                    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-secondary text-primary">
+                      <Sparkles className="h-4 w-4" />
+                    </span>
+                    <div>
+                      <h3 className="text-sm font-medium text-card-foreground" id="anim-label">Animaciones y Movimiento</h3>
+                      <p className="text-xs text-muted-foreground">Controla si la interfaz tiene efectos de movimiento.</p>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setSetting("animations", !settings.animations)}
+                    aria-label={settings.animations ? "Desactivar movimiento" : "Activar movimiento"}
+                    aria-describedby="anim-label"
+                    className="flex min-h-[48px] min-w-[48px] items-center justify-center rounded-md border-2 border-primary bg-primary/10 px-4 py-2 text-sm font-semibold text-primary transition-colors hover:bg-primary hover:text-primary-foreground focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ring"
+                  >
+                    {settings.animations ? "Desactivar movimiento" : "Activar movimiento"}
+                  </button>
+                </div>
               </TabsContent>
 
               {/* AUDIO / LECTURA */}

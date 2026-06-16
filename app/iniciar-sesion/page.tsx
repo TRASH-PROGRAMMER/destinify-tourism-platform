@@ -17,6 +17,9 @@ import {
   AlertCircle,
   CheckCircle2,
   ArrowLeft,
+  User,
+  Compass,
+  ShieldCheck
 } from "lucide-react"
 
 type Errors = {
@@ -25,6 +28,8 @@ type Errors = {
   form?: string
 }
 
+type Role = "viajero" | "guia" | "admin"
+
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 export default function LoginPage() {
@@ -32,6 +37,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
   const [remember, setRemember] = useState(true)
+  const [role, setRole] = useState<Role>("viajero")
   const [errors, setErrors] = useState<Errors>({})
   const [touched, setTouched] = useState<{ email?: boolean; password?: boolean }>({})
   const [loading, setLoading] = useState(false)
@@ -47,6 +53,10 @@ export default function LoginPage() {
       const saved = localStorage.getItem("destinify_remember_email")
       if (saved) {
         setEmail(saved)
+      }
+      const savedRole = localStorage.getItem("destinify_last_role") as Role
+      if (savedRole && ["viajero", "guia", "admin"].includes(savedRole)) {
+        setRole(savedRole)
       }
     } catch {
       // ignore
@@ -98,8 +108,10 @@ export default function LoginPage() {
     try {
       if (remember) {
         localStorage.setItem("destinify_remember_email", email.trim())
+        localStorage.setItem("destinify_last_role", role)
       } else {
         localStorage.removeItem("destinify_remember_email")
+        localStorage.removeItem("destinify_last_role")
       }
     } catch {
       // ignore
@@ -130,7 +142,13 @@ export default function LoginPage() {
     // Éxito
     setSuccess(true)
     setTimeout(() => {
-      window.location.href = "/perfil"
+      if (role === "admin") {
+        window.location.href = "/admin"
+      } else if (role === "guia") {
+        window.location.href = "/guia/dashboard"
+      } else {
+        window.location.href = "/perfil"
+      }
     }, 900)
   }
 
@@ -147,7 +165,7 @@ export default function LoginPage() {
           </Link>
           <Link
             href="/"
-            className="inline-flex items-center gap-1.5 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+            className="inline-flex items-center gap-1.5 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
           >
             <ArrowLeft className="h-4 w-4" aria-hidden="true" />
             Volver al inicio
@@ -166,11 +184,48 @@ export default function LoginPage() {
             </p>
           </div>
 
-          {/* Instrucción visible antes del formulario */}
-          <p className="mb-4 text-sm text-muted-foreground">
-            Ingresa tu correo y contraseña. Los campos marcados con{" "}
-            <span className="font-semibold text-destructive">*</span> son obligatorios.
-          </p>
+          {/* Selector de Rol */}
+          <div className="mb-8">
+            <Label className="text-sm font-medium mb-3 block">¿Cómo deseas ingresar?</Label>
+            <div className="grid grid-cols-3 gap-2" role="radiogroup" aria-label="Selecciona tu rol">
+              <button
+                type="button"
+                role="radio"
+                aria-checked={role === "viajero"}
+                onClick={() => setRole("viajero")}
+                className={`flex flex-col items-center justify-center p-3 border-2 rounded-xl transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+                  role === "viajero" ? "border-primary bg-primary/10 text-primary" : "border-border text-muted-foreground hover:bg-muted"
+                }`}
+              >
+                <User className="h-5 w-5 mb-1" />
+                <span className="text-xs font-semibold">Viajero</span>
+              </button>
+              <button
+                type="button"
+                role="radio"
+                aria-checked={role === "guia"}
+                onClick={() => setRole("guia")}
+                className={`flex flex-col items-center justify-center p-3 border-2 rounded-xl transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+                  role === "guia" ? "border-primary bg-primary/10 text-primary" : "border-border text-muted-foreground hover:bg-muted"
+                }`}
+              >
+                <Compass className="h-5 w-5 mb-1" />
+                <span className="text-xs font-semibold">Guía</span>
+              </button>
+              <button
+                type="button"
+                role="radio"
+                aria-checked={role === "admin"}
+                onClick={() => setRole("admin")}
+                className={`flex flex-col items-center justify-center p-3 border-2 rounded-xl transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+                  role === "admin" ? "border-primary bg-primary/10 text-primary" : "border-border text-muted-foreground hover:bg-muted"
+                }`}
+              >
+                <ShieldCheck className="h-5 w-5 mb-1" />
+                <span className="text-xs font-semibold">Admin</span>
+              </button>
+            </div>
+          </div>
 
           {/* Mensaje de error general (credenciales / bloqueo) */}
           {errors.form && (
@@ -193,7 +248,7 @@ export default function LoginPage() {
             >
               <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-primary" aria-hidden="true" />
               <p className="text-sm font-medium leading-relaxed text-foreground">
-                Inicio de sesión correcto. Redirigiéndote a tu panel personalizado...
+                Inicio de sesión correcto. Redirigiéndote a tu panel...
               </p>
             </div>
           )}
@@ -222,7 +277,11 @@ export default function LoginPage() {
                     if (touched.email) setErrors((er) => ({ ...er, email: validateEmail(e.target.value) }))
                   }}
                   onBlur={() => handleBlur("email")}
-                  placeholder="tucorreo@ejemplo.com"
+                  placeholder={
+                    role === "guia" ? "guia@ejemplo.com" : 
+                    role === "admin" ? "admin@destinify.com" : 
+                    "tucorreo@ejemplo.com"
+                  }
                   className="h-12 pl-11"
                   aria-required="true"
                   aria-invalid={!!errors.email}
@@ -245,7 +304,7 @@ export default function LoginPage() {
                 </Label>
                 <Link
                   href="/recuperar-contrasena"
-                  className="text-sm font-medium text-primary underline-offset-2 hover:underline"
+                  className="text-sm font-medium text-primary underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
                 >
                   ¿Olvidaste tu contraseña?
                 </Link>
@@ -315,7 +374,7 @@ export default function LoginPage() {
                   <span>Verificando...</span>
                 </>
               ) : (
-                "Iniciar sesión"
+                `Iniciar sesión como ${role === 'viajero' ? 'Viajero' : role === 'guia' ? 'Guía' : 'Admin'}`
               )}
             </Button>
 
@@ -325,29 +384,52 @@ export default function LoginPage() {
             </div>
           </form>
 
-          {/* Separador */}
-          <div className="my-6 flex items-center gap-4">
-            <div className="h-px flex-1 bg-border" />
-            <span className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-              o continúa con
-            </span>
-            <div className="h-px flex-1 bg-border" />
-          </div>
+          {role === "viajero" && (
+            <>
+              {/* Separador */}
+              <div className="my-6 flex items-center gap-4">
+                <div className="h-px flex-1 bg-border" />
+                <span className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                  o continúa con
+                </span>
+                <div className="h-px flex-1 bg-border" />
+              </div>
 
-          {/* Login social */}
-          <div className="space-y-3">
-            <SocialButton provider="Google" />
-            <SocialButton provider="Facebook" />
-            <SocialButton provider="Apple" />
-          </div>
+              {/* Login social */}
+              <div className="space-y-3">
+                <SocialButton provider="Google" />
+                <SocialButton provider="Facebook" />
+                <SocialButton provider="Apple" />
+              </div>
+            </>
+          )}
 
           {/* Registro */}
-          <p className="mt-8 text-center text-sm text-muted-foreground">
-            ¿No tienes una cuenta?{" "}
-            <Link href="/comenzar" className="font-semibold text-primary underline-offset-2 hover:underline">
-              Regístrate gratis
-            </Link>
-          </p>
+          <div className="mt-8 pt-6 border-t border-border flex flex-col space-y-4">
+            <div className="text-center">
+              <p className="text-sm text-muted-foreground mb-2">¿No tienes cuenta?</p>
+              <div className="flex flex-col gap-2">
+                <Button variant="outline" asChild className="w-full justify-start">
+                  <Link href="/comenzar">
+                    <User className="mr-2 h-4 w-4 text-primary" />
+                    Crear cuenta de Viajero
+                  </Link>
+                </Button>
+                <Button variant="outline" asChild className="w-full justify-start">
+                  <Link href="/registro-guia">
+                    <Compass className="mr-2 h-4 w-4 text-primary" />
+                    Unirme como Guía Turístico
+                  </Link>
+                </Button>
+                <Button variant="outline" asChild className="w-full justify-start">
+                  <Link href="/admin/registro">
+                    <ShieldCheck className="mr-2 h-4 w-4 text-primary" />
+                    Registro de Proveedor / Admin
+                  </Link>
+                </Button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </main>

@@ -82,7 +82,7 @@ export default function AssistantPage() {
     scrollToBottom()
   }, [messages])
 
-  const handleSend = (text: string = input) => {
+  const handleSend = async (text: string = input) => {
     if (!text.trim()) return
 
     const userMessage: Message = {
@@ -95,32 +95,46 @@ export default function AssistantPage() {
     setInput("")
     setIsLoading(true)
 
-    // Simulate AI response
-    setTimeout(() => {
-      let response: Message
+    // Conexión real con el backend de Gemini
+    try {
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          // Enviamos todo el historial para dar contexto a la IA
+          messages: [...messages, userMessage].map((m) => ({
+            role: m.role,
+            content: m.content,
+          })),
+        }),
+      })
 
-      if (text.toLowerCase().includes("galápagos") || text.toLowerCase().includes("galapagos")) {
-        response = sampleResponses["galapagos"]
-      } else if (text.toLowerCase().includes("aventura") || text.toLowerCase().includes("adrenalina")) {
-        response = sampleResponses["aventura"]
-      } else if (text.toLowerCase().includes("restaurante") || text.toLowerCase().includes("comer") || text.toLowerCase().includes("quito")) {
-        response = sampleResponses["restaurantes"]
-      } else {
-        response = {
-          id: `resp-${Date.now()}`,
-          role: "assistant",
-          content: `Gracias por tu consulta sobre "${text}". Estoy aquí para ayudarte a planificar tu viaje perfecto por Ecuador.\n\nPuedo asistirte con:\n- Recomendaciones de destinos personalizadas\n- Creación de itinerarios optimizados\n- Sugerencias de actividades y restaurantes\n- Información sobre clima y mejor época para visitar\n- Tips y consejos de viaje\n\n¿En qué te gustaría que te ayude específicamente?`,
-          suggestions: [
-            { label: "Ver destinos populares", action: "/destinos" },
-            { label: "Crear un itinerario", action: "/itinerarios/nuevo" },
-          ],
-        }
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.details || data.error || "Error al conectar con la IA")
       }
 
-      response = { ...response, id: `resp-${Date.now()}` }
-      setMessages((prev) => [...prev, response])
+      const aiMessage: Message = {
+        id: `resp-${Date.now()}`,
+        role: "assistant",
+        content: data.content || "Lo siento, no pude generar una respuesta clara.",
+      }
+
+      setMessages((prev) => [...prev, aiMessage])
+    } catch (error: any) {
+      console.error(error)
+      const errorMessage: Message = {
+        id: `err-${Date.now()}`,
+        role: "assistant",
+        content: `**Error de conexión:** No pudimos contactar a la inteligencia artificial.\n\n_Detalle: ${error.message}_\n\nSi eres el administrador, verifica que hayas configurado tu \`GEMINI_API_KEY\` en el archivo \`.env.local\` y hayas reiniciado el servidor (\`npm run dev\`).`,
+      }
+      setMessages((prev) => [...prev, errorMessage])
+    } finally {
       setIsLoading(false)
-    }, 1500)
+    }
   }
 
   const handleSuggestionClick = (suggestion: string) => {

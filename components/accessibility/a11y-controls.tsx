@@ -99,7 +99,7 @@ export function OptionButtons({ label, icon, options, value, onChange }: OptionB
             onClick={() => onChange(opt.value)}
             aria-pressed={value === opt.value}
             className={cn(
-              "rounded-md border px-3 py-1.5 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+              "min-h-[48px] min-w-[48px] rounded-md border px-4 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
               value === opt.value
                 ? "border-primary bg-primary text-primary-foreground"
                 : "border-border bg-background text-foreground hover:bg-secondary",
