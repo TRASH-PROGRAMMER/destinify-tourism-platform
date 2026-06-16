@@ -193,6 +193,9 @@ export default function ReservationsPage() {
                 <p className="text-sm text-muted-foreground">Total confirmado</p>
                 <p className="text-2xl font-bold text-foreground">${totalConfirmed}</p>
               </div>
+              <Button asChild>
+                <Link href="/reservar">Nueva reserva</Link>
+              </Button>
             </div>
           </div>
 
