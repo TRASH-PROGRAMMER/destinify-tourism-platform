@@ -366,8 +366,19 @@ export default function LoginPage() {
               </Label>
             </div>
 
-            {/* Botón principal */}
-            <Button type="submit" className="h-12 w-full text-base" disabled={loading || success}>
+            {/* Botón principal (Heurística 5: Prevención de errores - Botón deshabilitado si hay errores o campos vacíos) */}
+            <Button 
+              type="submit" 
+              className="h-12 w-full text-base" 
+              disabled={
+                loading || 
+                success || 
+                !email.trim() || 
+                !password.trim() || 
+                !!errors.email || 
+                !!errors.password
+              }
+            >
               {loading ? (
                 <>
                   <Loader2 className="h-5 w-5 animate-spin" aria-hidden="true" />

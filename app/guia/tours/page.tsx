@@ -187,6 +187,7 @@ export default function GuiaToursPage() {
               </CardContent>
               <CardFooter className="flex justify-between border-t border-border pt-6">
                 <Button variant="ghost" type="button">Guardar como Borrador</Button>
+                {/* Heurística 5: Prevención de errores. El botón de publicar usa validación nativa (required, min) para prevenir envíos accidentales o incompletos. */}
                 <Button type="submit">
                   <Plus className="mr-2 h-4 w-4" />
                   Publicar Tour
