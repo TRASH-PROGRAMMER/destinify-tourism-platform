@@ -37,6 +37,13 @@ export function LanguageSwitcher() {
     localStorage.setItem("destinify-lang", code)
     document.documentElement.lang = code
     
+    // Forzar la traducción vía Google Translate
+    const select = document.querySelector('.goog-te-combo') as HTMLSelectElement
+    if (select) {
+      select.value = code === 'es' ? 'es' : code
+      select.dispatchEvent(new Event('change'))
+    }
+    
     // Simular el cambio en el sistema para fines de usabilidad
     toast.success(`Idioma cambiado a ${name}`, {
       description: "Las preferencias del sistema se han actualizado correctamente.",
