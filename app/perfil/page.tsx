@@ -1,7 +1,16 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
+import {
+  ContextMenu,
+  ContextMenuTrigger,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuSeparator,
+  ContextMenuShortcut,
+} from "@/components/ui/context-menu"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Header } from "@/components/header"
@@ -94,12 +103,34 @@ const interestIcons: Record<string, typeof Mountain> = {
 
 export default function ProfilePage() {
   const [activeTab, setActiveTab] = useState<"trips" | "saved" | "reviews">("trips")
+  const router = useRouter()
+
+  // Heurística de Flexibilidad: Atajos de teclado (Aceleradores)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Alt + N = Nuevo viaje
+      if (e.altKey && e.key.toLowerCase() === "n") {
+        e.preventDefault()
+        router.push("/itinerarios/nuevo")
+      }
+      // Alt + C = Configuración
+      if (e.altKey && e.key.toLowerCase() === "c") {
+        e.preventDefault()
+        router.push("/perfil/editar")
+      }
+    }
+
+    window.addEventListener("keydown", handleKeyDown)
+    return () => window.removeEventListener("keydown", handleKeyDown)
+  }, [router])
 
   return (
     <div className="min-h-screen bg-background">
       <Header />
 
-      <main className="pt-20 pb-16">
+      <ContextMenu>
+        <ContextMenuTrigger asChild>
+          <main className="pt-20 pb-16">
         {/* Profile Header */}
         <div className="bg-gradient-to-br from-primary/10 via-background to-accent/5 border-b border-border">
           <div className="mx-auto max-w-5xl px-4 py-12">
@@ -351,6 +382,27 @@ export default function ProfilePage() {
           )}
         </div>
       </main>
+      </ContextMenuTrigger>
+
+        {/* Heurística de Flexibilidad: Menú Contextual (Clic Derecho) */}
+        <ContextMenuContent className="w-64">
+          <ContextMenuItem onClick={() => router.push('/itinerarios/nuevo')} className="cursor-pointer">
+            <MapPin className="mr-2 h-4 w-4" />
+            Planificar nuevo viaje
+            <ContextMenuShortcut>Alt+N</ContextMenuShortcut>
+          </ContextMenuItem>
+          <ContextMenuItem onClick={() => router.push('/perfil/editar')} className="cursor-pointer">
+            <Settings className="mr-2 h-4 w-4" />
+            Configuración del perfil
+            <ContextMenuShortcut>Alt+C</ContextMenuShortcut>
+          </ContextMenuItem>
+          <ContextMenuSeparator />
+          <ContextMenuItem onClick={() => setActiveTab('saved')} className="cursor-pointer">
+            <Heart className="mr-2 h-4 w-4" />
+            Ver destinos guardados
+          </ContextMenuItem>
+        </ContextMenuContent>
+      </ContextMenu>
 
       <Footer />
     </div>

@@ -23,8 +23,8 @@ export function VideoSection() {
             className="w-full aspect-video object-contain"
             aria-label="Video promocional de Destinify demostrando las opciones de viaje"
           >
-            {/* Usamos un video de prueba público, ya que es un entorno de demostración */}
-            <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4" />
+            {/* Usamos el video local subido por el usuario */}
+            <source src="/Video%20Project%201.mp4" type="video/mp4" />
             {/* Pista de subtítulos (VTT) */}
             <track
               kind="subtitles"

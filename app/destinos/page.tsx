@@ -93,7 +93,7 @@ const allDestinations = [
     rating: 4.8,
     reviews: 2089,
     tags: ["Naturaleza", "Trekking", "Volcanes", "Aventura"],
-    image: "https://images.unsplash.com/photo-1624395149011-470cf6f6c2f4?w=800&h=600&fit=crop",
+    image: "https://hazteverecuador.com/11-parques-nacionales-posee-el-ecuador/",
     price: 89,
     duration: "1-2 días",
     difficulty: "Moderado",

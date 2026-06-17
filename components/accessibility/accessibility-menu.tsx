@@ -67,14 +67,44 @@ export function AccessibilityMenu({ open, onOpenChange }: { open: boolean; onOpe
     voiceTranscript,
   } = useA11y()
   const [tab, setTab] = useState("quick")
+  const [width, setWidth] = useState(448) // 448px es approx max-w-md
+
+  const handleDrag = (e: React.MouseEvent) => {
+    e.preventDefault()
+    const startX = e.pageX
+    const startWidth = width
+
+    const onMouseMove = (moveEvent: MouseEvent) => {
+      const delta = startX - moveEvent.pageX
+      const newWidth = Math.min(Math.max(320, startWidth + delta), window.innerWidth - 40)
+      setWidth(newWidth)
+    }
+
+    const onMouseUp = () => {
+      document.removeEventListener("mousemove", onMouseMove)
+      document.removeEventListener("mouseup", onMouseUp)
+    }
+
+    document.addEventListener("mousemove", onMouseMove)
+    document.addEventListener("mouseup", onMouseUp)
+  }
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent
         side="right"
-        className="w-full max-w-md p-0 sm:max-w-md"
+        className="p-0 transition-none duration-0"
+        style={{ maxWidth: `${width}px`, width: "100%" }}
         aria-label="Menú de accesibilidad"
       >
+        <div
+          className="absolute left-0 top-0 bottom-0 w-2.5 cursor-col-resize hover:bg-primary/50 active:bg-primary transition-colors z-50"
+          onMouseDown={handleDrag}
+          role="separator"
+          aria-orientation="vertical"
+          aria-label="Arrastrar para redimensionar el menú"
+          title="Arrastrar para redimensionar"
+        />
         <SheetHeader className="border-b border-border px-4 py-4">
           <SheetTitle className="flex items-center gap-2 font-serif text-xl">
             <Zap className="h-5 w-5 text-primary" />
