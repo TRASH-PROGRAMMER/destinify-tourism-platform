@@ -375,9 +375,13 @@ export default function ProfilePage() {
             <div className="text-center py-12">
               <Star className="h-12 w-12 mx-auto text-muted-foreground/50" />
               <h3 className="mt-4 font-semibold text-foreground">No hay reseñas aún</h3>
-              <p className="mt-2 text-sm text-muted-foreground">
+              <p className="mt-2 text-sm text-muted-foreground mb-4">
                 Comparte tu experiencia después de tu próximo viaje
               </p>
+              {/* Heurística 8: Diseño Minimalista / "No me hagas pensar". En lugar de un estado vacío muerto, proveemos la siguiente acción obvia */}
+              <Button asChild>
+                <Link href="/destinos">Explorar destinos</Link>
+              </Button>
             </div>
           )}
         </div>

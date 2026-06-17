@@ -322,6 +322,7 @@ export default function AssistantPage() {
                 placeholder="Pregúntame sobre destinos, actividades, itinerarios..."
                 className="flex-1"
                 disabled={isLoading}
+                autoFocus // Heurística 8: El usuario no tiene que hacer clic para empezar a hablar con la IA
               />
               <Button type="submit" disabled={!input.trim() || isLoading}>
                 <Send className="h-4 w-4" />

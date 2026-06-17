@@ -205,6 +205,7 @@ export default function DestinationsPage() {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="h-12 pl-12 pr-4 text-base rounded-xl"
+                  autoFocus // Heurística 8: No me hagas pensar (El cursor ya está listo para escribir)
                 />
                 {searchQuery && (
                   <button
