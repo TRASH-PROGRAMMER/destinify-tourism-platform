@@ -135,6 +135,8 @@ function FormDescription({ className, ...props }: React.ComponentProps<'p'>) {
   )
 }
 
+import { AlertCircle } from 'lucide-react'
+
 function FormMessage({ className, ...props }: React.ComponentProps<'p'>) {
   const { error, formMessageId } = useFormField()
   const body = error ? String(error?.message ?? '') : props.children
@@ -147,10 +149,11 @@ function FormMessage({ className, ...props }: React.ComponentProps<'p'>) {
     <p
       data-slot="form-message"
       id={formMessageId}
-      className={cn('text-destructive text-sm', className)}
+      className={cn('text-destructive text-sm font-medium flex items-center gap-1.5', className)}
       {...props}
     >
-      {body}
+      {error && <AlertCircle className="h-4 w-4 shrink-0" aria-hidden="true" />}
+      <span>{body}</span>
     </p>
   )
 }
