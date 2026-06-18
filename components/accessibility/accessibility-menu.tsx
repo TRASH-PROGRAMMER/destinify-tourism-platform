@@ -117,7 +117,7 @@ export function AccessibilityMenu({ open, onOpenChange }: { open: boolean; onOpe
             <Keyboard className="h-3.5 w-3.5" aria-hidden="true" />
             Pulsa{" "}
             <kbd className="rounded border border-border bg-muted px-1.5 py-0.5 font-mono text-[0.7rem] font-medium text-foreground">
-              Alt + H
+              Alt + Y
             </kbd>{" "}
             para ver los atajos de teclado.
           </p>

@@ -126,10 +126,17 @@ export default function AssistantPage() {
       setMessages((prev) => [...prev, aiMessage])
     } catch (error: any) {
       console.error(error)
+      
+      let friendlyMessage = `**Tuvimos un problema técnico 😅**\n\nNo pude procesar tu mensaje en este momento. Puede que mi servidor esté saturado o que haya un fallo en mi conexión a internet.`;
+      
+      if (error.message.includes("503") || error.message.includes("UNAVAILABLE")) {
+         friendlyMessage = `**Mis servidores están muy ocupados 🚦**\n\nLa inteligencia artificial está experimentando una demanda altísima en este momento. ¡Por favor, intenta enviar tu mensaje otra vez en unos segundos!`;
+      }
+      
       const errorMessage: Message = {
         id: `err-${Date.now()}`,
         role: "assistant",
-        content: `**Error de conexión:** No pudimos contactar a la inteligencia artificial.\n\n_Detalle: ${error.message}_\n\nSi eres el administrador, verifica que hayas configurado tu \`GEMINI_API_KEY\` en el archivo \`.env.local\` y hayas reiniciado el servidor (\`npm run dev\`).`,
+        content: friendlyMessage,
       }
       setMessages((prev) => [...prev, errorMessage])
     } finally {

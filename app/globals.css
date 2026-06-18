@@ -123,6 +123,13 @@
   body {
     @apply bg-background text-foreground;
   }
+  
+  /* WCAG 2.4.7: Foco Visible Global - Obligatorio y No oculto para todos los elementos interactivos */
+  *:focus-visible {
+    outline: 3px solid var(--ring) !important;
+    outline-offset: 2px !important;
+    border-radius: inherit;
+  }
 }
 
 /* ============================================

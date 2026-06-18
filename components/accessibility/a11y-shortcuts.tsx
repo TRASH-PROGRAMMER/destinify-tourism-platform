@@ -20,21 +20,29 @@ export interface ShortcutDef {
 
 // Definition list (also used to render the help dialog)
 export const SHORTCUTS: ShortcutDef[] = [
-  { combo: "Alt + A", keys: "alt+a", label: "Abrir / cerrar el menú de accesibilidad", category: "General" },
-  { combo: "Alt + H", keys: "alt+h", label: "Mostrar esta ayuda de atajos", category: "General" },
-  { combo: "Alt + R", keys: "alt+r", label: "Restablecer toda la accesibilidad", category: "General" },
-  { combo: "Alt + S", keys: "alt+s", label: "Saltar al contenido principal", category: "General" },
+  // NAVEGACIÓN GLOBAL
+  { combo: "Alt + H", keys: "alt+h", label: "Ir al Inicio", category: "Navegación" },
+  { combo: "Alt + D", keys: "alt+d", label: "Ir a Destinos", category: "Navegación" },
+  { combo: "Alt + I", keys: "alt+i", label: "Ir a Itinerarios", category: "Navegación" },
+  { combo: "Alt + A", keys: "alt+a", label: "Abrir IA Asistente", category: "Navegación" },
+  { combo: "Alt + P", keys: "alt+p", label: "Ir al Perfil", category: "Navegación" },
+
+  // ACCESIBILIDAD GENERAL
+  { combo: "Alt + U", keys: "alt+u", label: "Abrir / cerrar el menú de accesibilidad", category: "Accesibilidad" },
+  { combo: "Alt + Y", keys: "alt+y", label: "Mostrar esta ayuda de atajos", category: "Accesibilidad" },
+  { combo: "Alt + R", keys: "alt+r", label: "Restablecer toda la accesibilidad", category: "Accesibilidad" },
+  { combo: "Alt + S", keys: "alt+s", label: "Saltar al contenido principal", category: "Accesibilidad" },
 
   { combo: "Alt + +", keys: "alt++", label: "Aumentar el tamaño del texto", category: "Visión" },
   { combo: "Alt + -", keys: "alt+-", label: "Disminuir el tamaño del texto", category: "Visión" },
   { combo: "Alt + 0", keys: "alt+0", label: "Restablecer el tamaño del texto", category: "Visión" },
   { combo: "Alt + C", keys: "alt+c", label: "Activar / desactivar alto contraste", category: "Visión" },
   { combo: "Alt + T", keys: "alt+t", label: "Cambiar entre tema claro y oscuro", category: "Visión" },
-  { combo: "Alt + D", keys: "alt+d", label: "Activar / desactivar fuente para dislexia", category: "Visión" },
+  { combo: "Alt + E", keys: "alt+e", label: "Activar / desactivar fuente para dislexia", category: "Visión" },
   { combo: "Alt + K", keys: "alt+k", label: "Resaltar enlaces", category: "Visión" },
 
   { combo: "Alt + L", keys: "alt+l", label: "Leer la página en voz alta", category: "Audio" },
-  { combo: "Alt + P", keys: "alt+p", label: "Pausar / reanudar la lectura", category: "Audio" },
+  { combo: "Alt + O", keys: "alt+o", label: "Pausar / reanudar la lectura", category: "Audio" },
   { combo: "Alt + X", keys: "alt+x", label: "Detener la lectura", category: "Audio" },
   { combo: "Alt + V", keys: "alt+v", label: "Activar / desactivar control por voz", category: "Voz" },
 
@@ -98,11 +106,11 @@ export function A11yShortcuts({ onToggleMenu }: A11yShortcutsProps) {
       let handled = true
 
       switch (true) {
-        case key === "a":
+        case key === "u":
           onToggleMenu()
           announce("Menú de accesibilidad")
           break
-        case key === "h":
+        case key === "y":
           setHelpOpen((o) => !o)
           break
         case key === "r":
@@ -147,7 +155,7 @@ export function A11yShortcuts({ onToggleMenu }: A11yShortcutsProps) {
           announce(dark ? "Tema oscuro" : "Tema claro")
           break
         }
-        case key === "d": {
+        case key === "e": {
           const on = s.fontMode !== "dyslexic"
           setSetting("fontMode", on ? "dyslexic" : "default")
           announce(on ? "Fuente para dislexia activada" : "Fuente para dislexia desactivada")
@@ -163,7 +171,7 @@ export function A11yShortcuts({ onToggleMenu }: A11yShortcutsProps) {
           speakPage()
           announce("Leyendo la página")
           break
-        case key === "p": {
+        case key === "o": {
           const sp = speakingRef.current
           if (sp.speaking && !sp.paused) {
             pauseSpeech()
