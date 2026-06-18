@@ -92,13 +92,13 @@ export function AccessibilityMenu({ open, onOpenChange }: { open: boolean; onOpe
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent
-        side="right"
+        side="left"
         className="p-0 transition-none duration-0"
         style={{ maxWidth: `${width}px`, width: "100%" }}
         aria-label="Menú de accesibilidad"
       >
         <div
-          className="absolute left-0 top-0 bottom-0 w-2.5 cursor-col-resize hover:bg-primary/50 active:bg-primary transition-colors z-50"
+          className="absolute right-0 top-0 bottom-0 w-2.5 cursor-col-resize hover:bg-primary/50 active:bg-primary transition-colors z-50"
           onMouseDown={handleDrag}
           role="separator"
           aria-orientation="vertical"

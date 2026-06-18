@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
+import { useRouter, usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import {
   MapPin,
@@ -12,6 +12,8 @@ import {
   Compass,
   Calendar,
   Sparkles,
+  Home,
+  ChevronRight,
 } from "lucide-react"
 import { LanguageSwitcher } from "@/components/language-switcher"
 
@@ -24,6 +26,8 @@ const navigation = [
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const router = useRouter()
+  const pathname = usePathname()
+  const paths = pathname === '/' ? [] : pathname.split('/').filter(Boolean)
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -135,6 +139,36 @@ export function Header() {
               </Button>
             </div>
           </div>
+        </div>
+      )}
+
+      {/* Breadcrumbs - Orientación y Navegación (WCAG 2.4.5, 3.2.3) */}
+      {paths.length > 0 && (
+        <div className="bg-secondary/40 border-t border-border backdrop-blur-md hidden sm:block">
+          <nav aria-label="Breadcrumb" className="mx-auto max-w-7xl px-4 py-2 lg:px-8 flex items-center gap-1.5 text-xs text-muted-foreground overflow-x-auto whitespace-nowrap scrollbar-hide">
+            <Link href="/" className="hover:text-primary flex items-center gap-1 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm">
+              <Home className="h-3.5 w-3.5" />
+              <span className="sr-only">Inicio</span>
+            </Link>
+            {paths.map((path, index) => {
+              const href = `/${paths.slice(0, index + 1).join('/')}`
+              const isLast = index === paths.length - 1
+              const label = path.charAt(0).toUpperCase() + path.slice(1).replace(/-/g, ' ')
+              
+              return (
+                <div key={path} className="flex items-center gap-1.5">
+                  <ChevronRight className="h-3.5 w-3.5 opacity-50" aria-hidden="true" />
+                  {isLast ? (
+                    <span className="font-medium text-foreground" aria-current="page">{label}</span>
+                  ) : (
+                    <Link href={href} className="hover:text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm">
+                      {label}
+                    </Link>
+                  )}
+                </div>
+              )
+            })}
+          </nav>
         </div>
       )}
     </header>

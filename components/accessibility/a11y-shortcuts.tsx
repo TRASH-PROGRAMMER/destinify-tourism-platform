@@ -246,7 +246,7 @@ export function A11yShortcuts({ onToggleMenu }: A11yShortcutsProps) {
       </div>
       {announcement && (
         <div
-          className="fixed bottom-24 right-5 z-[9500] rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-background shadow-lg"
+          className="fixed bottom-24 left-5 z-[9500] rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-background shadow-lg"
           aria-hidden="true"
         >
           {announcement}
