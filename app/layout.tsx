@@ -56,8 +56,8 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="es" className={`${inter.variable} ${outfit.variable}`}>
-      <body className="font-sans antialiased bg-background">
+    <html lang="es" className={`${inter.variable} ${outfit.variable}`} suppressHydrationWarning>
+      <body className="font-sans antialiased bg-background" suppressHydrationWarning>
         <AccessibilityWidget>
           {children}
         </AccessibilityWidget>

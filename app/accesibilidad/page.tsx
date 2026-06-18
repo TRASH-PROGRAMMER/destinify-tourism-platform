@@ -18,7 +18,7 @@ export default function AccesibilidadPage() {
   return (
     <>
       <Header />
-      <main id="main-content" className="min-h-screen bg-background">
+      <main id="main-content" className="min-h-screen pt-16 bg-background">
         {/* Hero */}
         <section className="border-b border-border bg-secondary/40">
           <div className="mx-auto max-w-5xl px-4 py-12 sm:py-16">
