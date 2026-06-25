@@ -32,13 +32,13 @@ export function HeroSection() {
           </div>
 
           {/* Main heading */}
-          <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl md:text-6xl lg:text-7xl text-balance">
+          <h1 className="text-4xl leading-[1.1] font-bold tracking-tight text-foreground sm:text-5xl sm:leading-[1.15] md:text-6xl lg:text-7xl text-balance">
             Descubre Ecuador con{" "}
-            <span className="text-primary">experiencias personalizadas</span>
+            <span className="text-primary block sm:inline">experiencias personalizadas</span>
           </h1>
 
           {/* Subheading */}
-          <p className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground leading-relaxed text-pretty">
+          <p className="mx-auto mt-6 max-w-2xl text-base sm:text-lg text-muted-foreground leading-relaxed text-pretty px-2 sm:px-0">
             Tu asistente de viaje inteligente que planifica itinerarios perfectos, 
             gestiona reservas y te acompaña en cada momento de tu aventura.
           </p>

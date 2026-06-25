@@ -23,9 +23,9 @@ function AccessibilityButton() {
         onClick={() => setOpen(true)}
         aria-label="Abrir menú de accesibilidad (Alt + U)"
         aria-haspopup="dialog"
-        className="fixed bottom-5 left-5 z-[9000] flex h-14 w-14 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg ring-2 ring-background transition-transform hover:scale-105 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ring"
+        className="fixed bottom-6 left-6 z-[9000] flex h-16 w-16 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg ring-2 ring-background transition-transform hover:scale-105 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ring"
       >
-        <Accessibility className="h-7 w-7" />
+        <Accessibility className="h-8 w-8" />
       </button>
       <AccessibilityMenu open={open} onOpenChange={setOpen} />
     </>
