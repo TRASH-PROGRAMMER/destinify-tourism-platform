@@ -549,38 +549,43 @@ export default function OnboardingPage() {
                 </div>
               </div>
 
-              {/* Accesibilidad requerida */}
-              <div className="space-y-3">
-                <Label className="text-base" id="a11y-label">
-                  Accesibilidad requerida <span className="font-normal text-muted-foreground">(opcional)</span>
-                </Label>
-                <p id="a11y-help" className="text-xs text-muted-foreground">
-                  Nos ayuda a recomendarte lugares y servicios adaptados a tus necesidades.
-                </p>
-                <div className="grid gap-3 sm:grid-cols-2" role="group" aria-labelledby="a11y-label" aria-describedby="a11y-help">
-                  {accessibilityNeeds.map((need) => {
-                    const isSelected = formData.accessibility.includes(need.id)
-                    return (
-                      <button
-                        key={need.id}
-                        type="button"
-                        aria-pressed={isSelected}
-                        onClick={() => toggleArray("accessibility", need.id)}
-                        className={`flex items-start gap-3 rounded-xl border-2 p-4 text-left transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
-                          isSelected ? "border-primary bg-primary/5" : "border-border bg-card hover:border-primary/50"
-                        }`}
-                      >
-                        <need.icon className={`mt-0.5 h-5 w-5 shrink-0 ${isSelected ? "text-primary" : "text-muted-foreground"}`} aria-hidden="true" />
-                        <span>
-                          <span className="block font-medium text-foreground">{need.name}</span>
-                          <span className="mt-0.5 block text-xs text-muted-foreground">{need.description}</span>
-                        </span>
-                        {isSelected && <Check className="ml-auto h-4 w-4 text-primary" aria-hidden="true" />}
-                      </button>
-                    )
-                  })}
+              {/* Accesibilidad requerida (Hick's Law: Progressive Disclosure) */}
+              <details className="group rounded-xl border border-border bg-card p-4 transition-all">
+                <summary className="cursor-pointer text-base font-medium text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm flex items-center justify-between">
+                  <span>Requerimientos de accesibilidad (Opcional)</span>
+                  <span className="text-xs text-muted-foreground group-open:hidden">Mostrar opciones</span>
+                  <span className="text-xs text-muted-foreground hidden group-open:inline">Ocultar opciones</span>
+                </summary>
+                
+                <div className="mt-4 animate-in fade-in slide-in-from-top-2">
+                  <p id="a11y-help" className="mb-3 text-xs text-muted-foreground">
+                    Nos ayuda a recomendarte lugares y servicios adaptados a tus necesidades.
+                  </p>
+                  <div className="grid gap-3 sm:grid-cols-2" role="group" aria-describedby="a11y-help">
+                    {accessibilityNeeds.map((need) => {
+                      const isSelected = formData.accessibility.includes(need.id)
+                      return (
+                        <button
+                          key={need.id}
+                          type="button"
+                          aria-pressed={isSelected}
+                          onClick={() => toggleArray("accessibility", need.id)}
+                          className={`flex items-start gap-3 rounded-xl border-2 p-4 text-left transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+                            isSelected ? "border-primary bg-primary/5" : "border-border bg-muted/30 hover:border-primary/50"
+                          }`}
+                        >
+                          <need.icon className={`mt-0.5 h-5 w-5 shrink-0 ${isSelected ? "text-primary" : "text-muted-foreground"}`} aria-hidden="true" />
+                          <span>
+                            <span className="block font-medium text-foreground">{need.name}</span>
+                            <span className="mt-0.5 block text-xs text-muted-foreground">{need.description}</span>
+                          </span>
+                          {isSelected && <Check className="ml-auto h-4 w-4 text-primary" aria-hidden="true" />}
+                        </button>
+                      )
+                    })}
+                  </div>
                 </div>
-              </div>
+              </details>
 
               {/* Clima favorito */}
               <div className="space-y-3">
@@ -624,26 +629,31 @@ export default function OnboardingPage() {
                 <p className="mt-2 text-muted-foreground">Con esto, nuestra IA diseña experiencias hechas para ti.</p>
               </div>
 
-              {/* Experiencia que busca */}
-              <div className="space-y-2">
-                <Label htmlFor="experience" className="text-base">
-                  ¿Qué experiencia buscas? <span className="font-normal text-muted-foreground">(opcional)</span>
-                </Label>
-                <textarea
-                  id="experience"
-                  name="experience"
-                  rows={4}
-                  placeholder="Ej. Quiero conocer la cultura andina, probar comida típica y hacer una caminata con vistas a volcanes…"
-                  value={formData.experience}
-                  onChange={(e) => update("experience", e.target.value)}
-                  aria-describedby="exp-help"
-                  className="w-full rounded-md border border-input bg-background px-3 py-2 text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                />
-                <p id="exp-help" className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                  <HelpCircle className="h-3.5 w-3.5" aria-hidden="true" />
-                  Cuéntalo con tus palabras. La IA lo interpretará para sugerirte destinos y actividades.
-                </p>
-              </div>
+              {/* Experiencia que busca (Hick's Law: Progressive Disclosure) */}
+              <details className="group rounded-xl border border-border bg-card p-4 transition-all">
+                <summary className="cursor-pointer text-base font-medium text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm flex items-center justify-between">
+                  <span>Describe tu viaje ideal (Opcional)</span>
+                  <span className="text-xs text-muted-foreground group-open:hidden">Escribir</span>
+                  <span className="text-xs text-muted-foreground hidden group-open:inline">Ocultar</span>
+                </summary>
+                
+                <div className="mt-4 space-y-2 animate-in fade-in slide-in-from-top-2">
+                  <textarea
+                    id="experience"
+                    name="experience"
+                    rows={4}
+                    placeholder="Ej. Quiero conocer la cultura andina, probar comida típica y hacer una caminata con vistas a volcanes…"
+                    value={formData.experience}
+                    onChange={(e) => update("experience", e.target.value)}
+                    aria-describedby="exp-help"
+                    className="w-full rounded-md border border-input bg-background px-3 py-2 text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  />
+                  <p id="exp-help" className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                    <HelpCircle className="h-3.5 w-3.5" aria-hidden="true" />
+                    Cuéntalo con tus palabras. La IA lo interpretará para sugerirte destinos y actividades.
+                  </p>
+                </div>
+              </details>
 
               {/* Nivel de aventura */}
               <div className="space-y-3">

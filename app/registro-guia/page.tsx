@@ -85,48 +85,25 @@ export default function RegistroGuiaPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col md:flex-row bg-muted/30">
-      {/* Panel Izquierdo - Información */}
-      <div className="w-full md:w-1/2 bg-primary text-primary-foreground p-8 md:p-12 lg:p-24 flex flex-col justify-center">
-        <Link href="/" className="flex items-center gap-2 font-serif text-2xl font-bold mb-12 w-fit rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-primary">
-          <Compass className="h-8 w-8" aria-hidden="true" />
-          Destinify
-        </Link>
-        <h1 className="text-4xl md:text-5xl font-serif font-bold mb-6">Únete como Guía Turístico</h1>
-        <p className="text-lg text-primary-foreground/80 mb-12 max-w-md">
-          Comparte tu pasión por Ecuador. Crea experiencias inolvidables, gestiona tus reservas y conecta con viajeros de todo el mundo.
-        </p>
-        
-        <div className="space-y-6">
-          <div className="flex items-start gap-4">
-            <Map className="w-6 h-6 mt-1 opacity-80" aria-hidden="true" />
-            <div>
-              <h3 className="font-semibold text-lg">Crea tus propios tours</h3>
-              <p className="text-primary-foreground/70">Diseña itinerarios únicos y establece tus propios horarios.</p>
-            </div>
-          </div>
-          <div className="flex items-start gap-4">
-            <Globe className="w-6 h-6 mt-1 opacity-80" aria-hidden="true" />
-            <div>
-              <h3 className="font-semibold text-lg">Alcance global</h3>
-              <p className="text-primary-foreground/70">Llega a miles de turistas que buscan experiencias auténticas.</p>
-            </div>
-          </div>
+    <div className="min-h-screen flex items-center justify-center bg-muted/30 p-4">
+      <div className="w-full max-w-xl">
+        <div className="mb-8 text-center">
+          <Link href="/" className="inline-flex items-center gap-2 font-serif text-2xl font-bold rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
+            <Compass className="h-8 w-8 text-primary" aria-hidden="true" />
+            Destinify
+          </Link>
         </div>
-      </div>
 
-      {/* Panel Derecho - Formulario */}
-      <div className="w-full md:w-1/2 p-8 md:p-12 lg:p-24 flex items-center justify-center">
-        <Card className="w-full max-w-md border-0 shadow-none bg-transparent">
-          <CardHeader className="px-0">
-            <CardTitle className="text-3xl font-serif">Regístrate</CardTitle>
+        <Card className="w-full border-border shadow-md bg-card">
+          <CardHeader className="text-center">
+            <CardTitle className="text-3xl font-serif">Únete como Guía Turístico</CardTitle>
             <CardDescription>
-              Completa el formulario para acceder a tu panel de guía.
+              Comparte tu pasión por Ecuador. Completa tus datos para acceder a tu panel.
             </CardDescription>
           </CardHeader>
-          <CardContent className="px-0">
+          <CardContent>
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
                 <FormField
                   control={form.control}
                   name="fullName"
@@ -168,45 +145,58 @@ export default function RegistroGuiaPage() {
                     )}
                   />
                 </div>
-                <FormField
-                  control={form.control}
-                  name="languages"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Idiomas que hablas</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Ej. Español, Inglés, Kichwa" aria-required="true" {...field} />
-                      </FormControl>
-                      <FormDescription>Separados por comas.</FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="experience"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Experiencia como Guía</FormLabel>
-                      <FormControl>
-                        <Textarea 
-                          placeholder="Cuéntanos sobre los lugares que conoces y tu experiencia previa..." 
-                          className="resize-none h-24"
-                          aria-required="true"
-                          {...field} 
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <Button type="submit" className="w-full" disabled={isSubmitting}>
+                
+                {/* Hick's law: Progressive disclosure for secondary info */}
+                <details className="group rounded-xl border border-border bg-muted/30 p-4 transition-all">
+                  <summary className="cursor-pointer text-sm font-semibold text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm flex items-center justify-between">
+                    <span>Información Profesional (Opcional por ahora)</span>
+                    <span className="text-xs text-muted-foreground group-open:hidden">Mostrar</span>
+                    <span className="text-xs text-muted-foreground hidden group-open:inline">Ocultar</span>
+                  </summary>
+                  
+                  <div className="mt-4 space-y-4 animate-in fade-in slide-in-from-top-2">
+                    <FormField
+                      control={form.control}
+                      name="languages"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Idiomas que hablas</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Ej. Español, Inglés, Kichwa" aria-required="true" {...field} />
+                          </FormControl>
+                          <FormDescription>Separados por comas.</FormDescription>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="experience"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Experiencia como Guía</FormLabel>
+                          <FormControl>
+                            <Textarea 
+                              placeholder="Cuéntanos sobre los lugares que conoces y tu experiencia previa..." 
+                              className="resize-none h-24"
+                              aria-required="true"
+                              {...field} 
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                </details>
+
+                <Button type="submit" className="w-full h-11 text-base mt-2" disabled={isSubmitting}>
                   {isSubmitting ? "Enviando..." : "Crear cuenta de Guía"}
                 </Button>
               </form>
             </Form>
           </CardContent>
-          <CardFooter className="px-0 justify-center text-sm text-muted-foreground">
+          <CardFooter className="justify-center text-sm text-muted-foreground">
             ¿Ya tienes una cuenta?{" "}
             <Link href="/iniciar-sesion" className="text-primary hover:underline ml-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm">
               Inicia sesión

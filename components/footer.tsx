@@ -2,32 +2,20 @@ import Link from "next/link"
 import { MapPin, Facebook, Instagram, Twitter, Youtube } from "lucide-react"
 
 const navigation = {
-  destinos: [
-    { name: "Galápagos", href: "/destinos/galapagos" },
-    { name: "Quito", href: "/destinos/quito" },
-    { name: "Cuenca", href: "/destinos/cuenca" },
-    { name: "Baños", href: "/destinos/banos" },
-    { name: "Montañita", href: "/destinos/montanita" },
+  explorar: [
+    { name: "Destinos Destacados", href: "/destinos" },
+    { name: "Itinerarios", href: "/itinerarios" },
+    { name: "Guías turísticos", href: "/guias" },
   ],
   plataforma: [
     { name: "Cómo funciona", href: "/como-funciona" },
     { name: "Asistente IA", href: "/asistente" },
-    { name: "Itinerarios", href: "/itinerarios" },
-    { name: "Reservas", href: "/reservas" },
-    { name: "Precios", href: "/precios" },
-  ],
-  empresa: [
-    { name: "Sobre nosotros", href: "/sobre-nosotros" },
-    { name: "Blog de viajes", href: "/blog" },
-    { name: "Proveedores", href: "/proveedores" },
-    { name: "Guías turísticos", href: "/guias" },
     { name: "Contacto", href: "/contacto" },
   ],
   legal: [
     { name: "Accesibilidad", href: "/accesibilidad" },
-    { name: "Términos de servicio", href: "/terminos" },
-    { name: "Política de privacidad", href: "/privacidad" },
-    { name: "Cookies", href: "/cookies" },
+    { name: "Términos", href: "/terminos" },
+    { name: "Privacidad", href: "/privacidad" },
   ],
 }
 
@@ -71,81 +59,57 @@ export function Footer() {
             </div>
           </div>
 
-          {/* Navigation */}
+          {/* Navigation - Simplified to 2 columns (Hick's Law) */}
           <div className="mt-16 grid grid-cols-2 gap-8 xl:col-span-2 xl:mt-0">
-            <div className="md:grid md:grid-cols-2 md:gap-8">
-              <div>
-                <h3 className="text-sm font-semibold text-foreground">Destinos</h3>
-                <ul className="mt-4 space-y-3">
-                  {navigation.destinos.map((item) => (
-                    <li key={item.name}>
-                      <Link
-                        href={item.href}
-                        className="text-sm text-muted-foreground transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-sm inline-block"
-                      >
-                        {item.name}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <div className="mt-10 md:mt-0">
-                <h3 className="text-sm font-semibold text-foreground">Plataforma</h3>
-                <ul className="mt-4 space-y-3">
-                  {navigation.plataforma.map((item) => (
-                    <li key={item.name}>
-                      <Link
-                        href={item.href}
-                        className="text-sm text-muted-foreground transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-sm inline-block"
-                      >
-                        {item.name}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+            <div>
+              <h3 className="text-sm font-semibold text-foreground">Explorar</h3>
+              <ul className="mt-4 space-y-3">
+                {navigation.explorar.map((item) => (
+                  <li key={item.name}>
+                    <Link
+                      href={item.href}
+                      className="text-sm text-muted-foreground transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-sm inline-block"
+                    >
+                      {item.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
             </div>
-            <div className="md:grid md:grid-cols-2 md:gap-8">
-              <div>
-                <h3 className="text-sm font-semibold text-foreground">Empresa</h3>
-                <ul className="mt-4 space-y-3">
-                  {navigation.empresa.map((item) => (
-                    <li key={item.name}>
-                      <Link
-                        href={item.href}
-                        className="text-sm text-muted-foreground transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-sm inline-block"
-                      >
-                        {item.name}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <div className="mt-10 md:mt-0">
-                <h3 className="text-sm font-semibold text-foreground">Legal</h3>
-                <ul className="mt-4 space-y-3">
-                  {navigation.legal.map((item) => (
-                    <li key={item.name}>
-                      <Link
-                        href={item.href}
-                        className="text-sm text-muted-foreground transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-sm inline-block"
-                      >
-                        {item.name}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+            <div>
+              <h3 className="text-sm font-semibold text-foreground">Plataforma</h3>
+              <ul className="mt-4 space-y-3">
+                {navigation.plataforma.map((item) => (
+                  <li key={item.name}>
+                    <Link
+                      href={item.href}
+                      className="text-sm text-muted-foreground transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-sm inline-block"
+                    >
+                      {item.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
             </div>
           </div>
         </div>
 
         {/* Bottom */}
-        <div className="mt-12 border-t border-border pt-8">
-          <p className="text-center text-xs text-muted-foreground">
-            &copy; {new Date().getFullYear()} Destinify. Todos los derechos reservados. 
-            Hecho con amor en Ecuador.
+        <div className="mt-12 border-t border-border pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+          <p className="text-xs text-muted-foreground">
+            &copy; {new Date().getFullYear()} Destinify. Hecho con amor en Ecuador.
           </p>
+          <div className="flex gap-4">
+            {navigation.legal.map((item) => (
+              <Link
+                key={item.name}
+                href={item.href}
+                className="text-xs text-muted-foreground transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
+              >
+                {item.name}
+              </Link>
+            ))}
+          </div>
         </div>
       </div>
     </footer>

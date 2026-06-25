@@ -99,18 +99,8 @@ export function DestinationsSection() {
                 <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors">
                   {destination.name}
                 </h3>
-                <p className="mt-1.5 text-sm text-muted-foreground line-clamp-2">
-                  {destination.description}
-                </p>
-
-                {/* Tags */}
-                <div className="mt-3 flex flex-wrap gap-1.5">
-                  {destination.tags.slice(0, 2).map((tag) => (
-                    <Badge key={tag} variant="secondary" className="text-xs font-normal">
-                      {tag}
-                    </Badge>
-                  ))}
-                </div>
+                {/* Hick's Law: Removed description and tags from overview to reduce cognitive load. 
+                    Users will see full details upon clicking the card. */}
 
                 {/* Footer */}
                 <div className="mt-auto pt-4 flex items-center justify-between border-t border-border mt-4">
