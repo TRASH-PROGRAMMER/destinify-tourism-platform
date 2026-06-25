@@ -6,8 +6,6 @@ import { Input } from "@/components/ui/input"
 import {
   Search,
   MapPin,
-  Calendar,
-  Users,
   Sparkles,
   ArrowRight,
 } from "lucide-react"
@@ -45,56 +43,36 @@ export function HeroSection() {
             gestiona reservas y te acompaña en cada momento de tu aventura.
           </p>
 
-          {/* Search box */}
-          <div className="mx-auto mt-10 max-w-3xl">
+          {/* Search box - Simplificado (Ley de Hick) */}
+          <div className="mx-auto mt-10 max-w-2xl">
             <div className="bg-card rounded-2xl shadow-xl border border-border p-2">
               <div className="flex flex-col gap-2 md:flex-row md:items-center">
                 <div className="flex-1 flex items-center gap-3 px-4 py-2">
-                  <MapPin className="h-5 w-5 text-primary shrink-0" />
+                  <MapPin className="h-6 w-6 text-primary shrink-0" />
                   <Input
                     type="text"
-                    placeholder="¿A dónde quieres ir? (ej: Galápagos, Quito, Cuenca...)"
+                    placeholder="¿A dónde quieres ir? (ej: Galápagos)"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 text-base placeholder:text-muted-foreground/70"
+                    className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 rounded-md text-lg placeholder:text-muted-foreground/70"
                   />
                 </div>
-                <div className="hidden md:block w-px h-8 bg-border" />
-                <div className="flex items-center gap-3 px-4 py-2">
-                  <Calendar className="h-5 w-5 text-primary shrink-0" />
-                  <span className="text-muted-foreground text-sm">Fechas flexibles</span>
-                </div>
-                <div className="hidden md:block w-px h-8 bg-border" />
-                <div className="flex items-center gap-3 px-4 py-2">
-                  <Users className="h-5 w-5 text-primary shrink-0" />
-                  <span className="text-muted-foreground text-sm">2 viajeros</span>
-                </div>
-                <Button size="lg" className="rounded-xl px-6" asChild>
+                <Button size="lg" className="rounded-xl px-8 h-12 text-base" asChild>
                   <Link href={`/destinos${searchQuery ? `?q=${encodeURIComponent(searchQuery)}` : ""}`}>
                     <Search className="h-5 w-5 mr-2" />
-                    Buscar
+                    Explorar
                   </Link>
                 </Button>
               </div>
             </div>
           </div>
 
-          {/* Quick actions */}
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-            <span className="text-sm text-muted-foreground">Populares:</span>
-            {["Galápagos", "Quito", "Cuenca", "Baños", "Montañita"].map((destination) => (
-              <Button
-                key={destination}
-                variant="outline"
-                size="sm"
-                className="rounded-full"
-                asChild
-              >
-                <Link href={`/destinos?q=${encodeURIComponent(destination)}`}>
-                  {destination}
-                </Link>
-              </Button>
-            ))}
+          {/* Quick actions - Reducido (Ley de Hick) */}
+          <div className="mt-6 flex flex-wrap items-center justify-center gap-3 text-sm text-muted-foreground">
+            <span>Sugerencias:</span>
+            <Link href="/destinos?q=Galapagos" className="font-medium text-foreground hover:text-primary transition-colors hover:underline underline-offset-4">Galápagos</Link>
+            <span>•</span>
+            <Link href="/destinos?q=Quito" className="font-medium text-foreground hover:text-primary transition-colors hover:underline underline-offset-4">Quito</Link>
           </div>
 
           {/* CTA buttons */}

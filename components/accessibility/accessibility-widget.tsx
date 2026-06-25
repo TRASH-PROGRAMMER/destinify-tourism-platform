@@ -1,8 +1,8 @@
 "use client"
 
 import { useState } from "react"
-import { Accessibility } from "lucide-react"
-import { A11yProvider } from "./a11y-provider"
+import { Accessibility, Contrast } from "lucide-react"
+import { A11yProvider, useA11y } from "./a11y-provider"
 import { ColorblindFilters } from "./colorblind-filters"
 import { AccessibilityMenu } from "./accessibility-menu"
 import { A11yShortcuts } from "./a11y-shortcuts"
@@ -10,9 +10,14 @@ import { A11yShortcuts } from "./a11y-shortcuts"
 function AccessibilityButton() {
   const [open, setOpen] = useState(false)
 
+  const { settings, setSetting } = useA11y()
+  const isHighContrast = settings.contrast === "high"
+
   return (
     <>
       <A11yShortcuts onToggleMenu={() => setOpen((o) => !o)} />
+      
+      {/* Botón principal del menú de accesibilidad */}
       <button
         type="button"
         onClick={() => setOpen(true)}

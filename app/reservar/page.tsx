@@ -197,11 +197,7 @@ export default function BookingPage() {
         e.phone = "El teléfono debe tener al menos 7 dígitos."
       }
       if (!form.documentId.trim()) e.documentId = "Ingresa tu cédula o pasaporte."
-      if (!form.emergencyName.trim())
-        e.emergencyName = "Ingresa un contacto de emergencia."
-      if (!form.emergencyPhone.trim())
-        e.emergencyPhone = "Ingresa el teléfono de emergencia."
-    }
+      // Hick's Law: Removed required validation for emergency contact to reduce friction
     if (step === 2) {
       if (form.paymentMethod === "card") {
         if (!form.cardName.trim()) e.cardName = "Ingresa el nombre en la tarjeta."
@@ -645,76 +641,70 @@ export default function BookingPage() {
 
                     <Separator />
 
-                    <div>
-                      <h3 className="flex items-center gap-2 text-sm font-semibold text-foreground">
-                        <Phone className="h-4 w-4 text-primary" aria-hidden="true" />
-                        Contacto de emergencia
-                      </h3>
-                      <div className="mt-3 grid gap-4 sm:grid-cols-2">
+                    {/* Hick's Law: Progressive Disclosure para información secundaria */}
+                    <details className="group rounded-lg border border-border bg-card p-4 transition-all">
+                      <summary className="cursor-pointer text-sm font-semibold text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm flex items-center justify-between">
+                        <span className="flex items-center gap-2">
+                          <Info className="h-4 w-4 text-primary" aria-hidden="true" />
+                          Información Adicional (Opcional)
+                        </span>
+                        <span className="text-xs text-muted-foreground group-open:hidden">Mostrar</span>
+                        <span className="text-xs text-muted-foreground hidden group-open:inline">Ocultar</span>
+                      </summary>
+                      
+                      <div className="mt-4 space-y-5 animate-in fade-in slide-in-from-top-2">
                         <div>
-                          <Label htmlFor="emergencyName">
-                            Nombre completo <span className="text-destructive">*</span>
-                          </Label>
-                          <Input
-                            id="emergencyName"
-                            value={form.emergencyName}
-                            onChange={(e) => update("emergencyName", e.target.value)}
-                            aria-invalid={!!errors.emergencyName}
-                            aria-describedby={
-                              errors.emergencyName ? "emergencyName-error" : undefined
-                            }
-                            className="mt-1.5"
-                          />
-                          {errors.emergencyName && (
-                            <FieldError id="emergencyName-error" message={errors.emergencyName} />
-                          )}
+                          <h3 className="flex items-center gap-2 text-sm font-semibold text-foreground">
+                            <Phone className="h-4 w-4 text-primary" aria-hidden="true" />
+                            Contacto de emergencia
+                          </h3>
+                          <div className="mt-3 grid gap-4 sm:grid-cols-2">
+                            <div>
+                              <Label htmlFor="emergencyName">Nombre completo</Label>
+                              <Input
+                                id="emergencyName"
+                                value={form.emergencyName}
+                                onChange={(e) => update("emergencyName", e.target.value)}
+                                className="mt-1.5"
+                                placeholder="Ej: Maria Perez"
+                              />
+                            </div>
+                            <div>
+                              <Label htmlFor="emergencyPhone">Teléfono</Label>
+                              <Input
+                                id="emergencyPhone"
+                                type="tel"
+                                inputMode="tel"
+                                value={form.emergencyPhone}
+                                onChange={(e) => update("emergencyPhone", e.target.value)}
+                                className="mt-1.5"
+                                placeholder="Ej: +593..."
+                              />
+                            </div>
+                          </div>
                         </div>
+
                         <div>
-                          <Label htmlFor="emergencyPhone">
-                            Teléfono <span className="text-destructive">*</span>
+                          <Label htmlFor="specialRequirements">
+                            Requerimientos especiales
                           </Label>
-                          <Input
-                            id="emergencyPhone"
-                            type="tel"
-                            inputMode="tel"
-                            value={form.emergencyPhone}
-                            onChange={(e) => update("emergencyPhone", e.target.value)}
-                            aria-invalid={!!errors.emergencyPhone}
-                            aria-describedby={
-                              errors.emergencyPhone ? "emergencyPhone-error" : undefined
-                            }
-                            className="mt-1.5"
+                          <Textarea
+                            id="specialRequirements"
+                            value={form.specialRequirements}
+                            onChange={(e) => update("specialRequirements", e.target.value)}
+                            placeholder="Alergias alimentarias, movilidad reducida, dietas, etc."
+                            className="mt-1.5 min-h-24"
+                            aria-describedby="specialRequirements-hint"
                           />
-                          {errors.emergencyPhone && (
-                            <FieldError
-                              id="emergencyPhone-error"
-                              message={errors.emergencyPhone}
-                            />
-                          )}
+                          <p
+                            id="specialRequirements-hint"
+                            className="mt-1.5 text-xs text-muted-foreground"
+                          >
+                            Cuéntanos cómo podemos hacer tu viaje más accesible y cómodo.
+                          </p>
                         </div>
                       </div>
-                    </div>
-
-                    <div>
-                      <Label htmlFor="specialRequirements">
-                        Requerimientos especiales{" "}
-                        <span className="font-normal text-muted-foreground">(opcional)</span>
-                      </Label>
-                      <Textarea
-                        id="specialRequirements"
-                        value={form.specialRequirements}
-                        onChange={(e) => update("specialRequirements", e.target.value)}
-                        placeholder="Alergias alimentarias, movilidad reducida, dietas, etc."
-                        className="mt-1.5 min-h-24"
-                        aria-describedby="specialRequirements-hint"
-                      />
-                      <p
-                        id="specialRequirements-hint"
-                        className="mt-1.5 text-xs text-muted-foreground"
-                      >
-                        Cuéntanos cómo podemos hacer tu viaje más accesible y cómodo.
-                      </p>
-                    </div>
+                    </details>
                   </div>
                 </section>
               )}

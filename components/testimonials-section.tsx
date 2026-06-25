@@ -47,7 +47,8 @@ export function TestimonialsSection() {
           {testimonials.map((testimonial) => (
             <div
               key={testimonial.id}
-              className="relative flex flex-col rounded-2xl bg-card p-6 shadow-sm border border-border"
+              tabIndex={0}
+              className="relative flex flex-col rounded-2xl bg-card p-6 shadow-sm border border-border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
             >
               {/* Quote icon */}
               <Quote className="h-8 w-8 text-primary/20" />

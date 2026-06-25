@@ -68,7 +68,8 @@ export function FeaturesSection() {
             {features.map((feature) => (
               <div
                 key={feature.name}
-                className="group relative rounded-2xl bg-card p-6 shadow-sm border border-border transition-all hover:shadow-md hover:border-primary/20"
+                tabIndex={0}
+                className="group relative rounded-2xl bg-card p-6 shadow-sm border border-border transition-all hover:shadow-md hover:border-primary/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
               >
                 <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
                   <feature.icon className="h-6 w-6" />

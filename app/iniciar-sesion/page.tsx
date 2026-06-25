@@ -184,46 +184,18 @@ export default function LoginPage() {
             </p>
           </div>
 
-          {/* Selector de Rol */}
-          <div className="mb-8">
-            <Label className="text-sm font-medium mb-3 block">¿Cómo deseas ingresar?</Label>
-            <div className="grid grid-cols-3 gap-2" role="radiogroup" aria-label="Selecciona tu rol">
-              <button
-                type="button"
-                role="radio"
-                aria-checked={role === "viajero"}
+          {/* Selector de Rol simplificado (Oculto por defecto, asume Viajero) */}
+          <div className="mb-6 flex items-center justify-between">
+            <h2 className="text-xl font-semibold">Bienvenido de nuevo</h2>
+            <div className="flex gap-2">
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className={`text-xs ${role === "viajero" ? "hidden" : ""}`}
                 onClick={() => setRole("viajero")}
-                className={`flex flex-col items-center justify-center p-3 border-2 rounded-xl transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
-                  role === "viajero" ? "border-primary bg-primary/10 text-primary" : "border-border text-muted-foreground hover:bg-muted"
-                }`}
               >
-                <User className="h-5 w-5 mb-1" />
-                <span className="text-xs font-semibold">Viajero</span>
-              </button>
-              <button
-                type="button"
-                role="radio"
-                aria-checked={role === "guia"}
-                onClick={() => setRole("guia")}
-                className={`flex flex-col items-center justify-center p-3 border-2 rounded-xl transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
-                  role === "guia" ? "border-primary bg-primary/10 text-primary" : "border-border text-muted-foreground hover:bg-muted"
-                }`}
-              >
-                <Compass className="h-5 w-5 mb-1" />
-                <span className="text-xs font-semibold">Guía</span>
-              </button>
-              <button
-                type="button"
-                role="radio"
-                aria-checked={role === "admin"}
-                onClick={() => setRole("admin")}
-                className={`flex flex-col items-center justify-center p-3 border-2 rounded-xl transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
-                  role === "admin" ? "border-primary bg-primary/10 text-primary" : "border-border text-muted-foreground hover:bg-muted"
-                }`}
-              >
-                <ShieldCheck className="h-5 w-5 mb-1" />
-                <span className="text-xs font-semibold">Admin</span>
-              </button>
+                Volver a Viajero
+              </Button>
             </div>
           </div>
 
@@ -415,30 +387,22 @@ export default function LoginPage() {
             </>
           )}
 
-          {/* Registro */}
-          <div className="mt-8 pt-6 border-t border-border flex flex-col space-y-4">
+          {/* Registro - Consolidado (Ley de Hick) */}
+          <div className="mt-8 pt-6 border-t border-border">
             <div className="text-center">
-              <p className="text-sm text-muted-foreground mb-2">¿No tienes cuenta?</p>
-              <div className="flex flex-col gap-2">
-                <Button variant="outline" asChild className="w-full justify-start">
-                  <Link href="/comenzar">
-                    <User className="mr-2 h-4 w-4 text-primary" />
-                    Crear cuenta de Viajero
-                  </Link>
-                </Button>
-                <Button variant="outline" asChild className="w-full justify-start">
-                  <Link href="/registro-guia">
-                    <Compass className="mr-2 h-4 w-4 text-primary" />
-                    Unirme como Guía Turístico
-                  </Link>
-                </Button>
-                <Button variant="outline" asChild className="w-full justify-start">
-                  <Link href="/admin/registro">
-                    <ShieldCheck className="mr-2 h-4 w-4 text-primary" />
-                    Registro de Proveedor / Admin
-                  </Link>
-                </Button>
-              </div>
+              <p className="text-sm text-muted-foreground mb-4">¿No tienes cuenta en Destinify?</p>
+              <Button variant="outline" asChild className="w-full h-12 text-base">
+                <Link href="/comenzar">
+                  Crear cuenta nueva
+                </Link>
+              </Button>
+            </div>
+            
+            {/* Opciones avanzadas discretas */}
+            <div className="mt-8 flex flex-wrap justify-center gap-x-4 gap-y-2 text-xs text-muted-foreground">
+              <button onClick={() => setRole("guia")} className="hover:text-primary hover:underline">Acceso para Guías</button>
+              <span>•</span>
+              <button onClick={() => setRole("admin")} className="hover:text-primary hover:underline">Acceso Administrativo</button>
             </div>
           </div>
         </div>

@@ -20,7 +20,7 @@ export function VideoSection() {
           <video
             controls
             preload="metadata"
-            className="w-full aspect-video object-contain"
+            className="w-full aspect-video object-contain focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-lg"
             aria-label="Video promocional de Destinify demostrando las opciones de viaje"
           >
             {/* Usamos el video local subido por el usuario */}

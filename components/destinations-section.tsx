@@ -76,7 +76,7 @@ export function DestinationsSection() {
             <Link
               key={destination.id}
               href={`/destinos/${destination.id}`}
-              className="group relative flex flex-col overflow-hidden rounded-2xl bg-card border border-border shadow-sm transition-all hover:shadow-lg hover:border-primary/20"
+              className="group relative flex flex-col overflow-hidden rounded-2xl bg-card border border-border shadow-sm transition-all hover:shadow-lg hover:border-primary/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
             >
               {/* Image */}
               <div className="relative aspect-[4/3] overflow-hidden">

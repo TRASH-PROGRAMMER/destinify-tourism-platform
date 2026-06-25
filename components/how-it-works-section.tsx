@@ -47,7 +47,7 @@ export function HowItWorksSection() {
         <div className="mx-auto mt-16 max-w-5xl">
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
             {steps.map((step, index) => (
-              <div key={step.name} className="relative">
+              <div key={step.name} className="relative rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 p-2 -m-2" tabIndex={0}>
                 {/* Connector line */}
                 {index < steps.length - 1 && (
                   <div className="hidden lg:block absolute top-8 left-[calc(50%+2rem)] w-[calc(100%-4rem)] h-0.5 bg-border" />

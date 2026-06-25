@@ -45,7 +45,7 @@ export function Footer() {
         <div className="xl:grid xl:grid-cols-3 xl:gap-8">
           {/* Brand */}
           <div className="space-y-8">
-            <Link href="/" className="flex items-center gap-2">
+            <Link href="/" className="flex items-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-xl">
               <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-primary-foreground">
                 <MapPin className="h-5 w-5" />
               </div>
@@ -62,7 +62,7 @@ export function Footer() {
                 <a
                   key={item.name}
                   href={item.href}
-                  className="text-muted-foreground transition-colors hover:text-primary"
+                  className="text-muted-foreground transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-sm"
                 >
                   <span className="sr-only">{item.name}</span>
                   <item.icon className="h-5 w-5" />
@@ -81,7 +81,7 @@ export function Footer() {
                     <li key={item.name}>
                       <Link
                         href={item.href}
-                        className="text-sm text-muted-foreground transition-colors hover:text-primary"
+                        className="text-sm text-muted-foreground transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-sm inline-block"
                       >
                         {item.name}
                       </Link>
@@ -96,7 +96,7 @@ export function Footer() {
                     <li key={item.name}>
                       <Link
                         href={item.href}
-                        className="text-sm text-muted-foreground transition-colors hover:text-primary"
+                        className="text-sm text-muted-foreground transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-sm inline-block"
                       >
                         {item.name}
                       </Link>
@@ -113,7 +113,7 @@ export function Footer() {
                     <li key={item.name}>
                       <Link
                         href={item.href}
-                        className="text-sm text-muted-foreground transition-colors hover:text-primary"
+                        className="text-sm text-muted-foreground transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-sm inline-block"
                       >
                         {item.name}
                       </Link>
@@ -128,7 +128,7 @@ export function Footer() {
                     <li key={item.name}>
                       <Link
                         href={item.href}
-                        className="text-sm text-muted-foreground transition-colors hover:text-primary"
+                        className="text-sm text-muted-foreground transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-sm inline-block"
                       >
                         {item.name}
                       </Link>
