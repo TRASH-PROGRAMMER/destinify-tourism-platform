@@ -24,6 +24,8 @@ export interface A11ySettings {
   speechRate: number
   speechVolume: number
   speechVoiceURI: string | null
+  reduceAudio: boolean
+  autoSubtitles: boolean
   // Cognitivo
   focusMode: boolean
   hideDistractions: boolean
@@ -53,6 +55,8 @@ export const DEFAULT_SETTINGS: A11ySettings = {
   speechRate: 1,
   speechVolume: 1,
   speechVoiceURI: null,
+  reduceAudio: false,
+  autoSubtitles: false,
   focusMode: false,
   hideDistractions: false,
   readingGuide: false,
@@ -372,6 +376,29 @@ export function A11yProvider({ children }: { children: React.ReactNode }) {
       }
     }
   }, [])
+
+  // ---- Multimedia enforcements ----
+  useEffect(() => {
+    const id = setInterval(() => {
+      // Audio
+      document.querySelectorAll("video, audio").forEach((m) => {
+        if (settings.reduceAudio && (m as HTMLMediaElement).volume > 0.5) {
+          ;(m as HTMLMediaElement).volume = 0.5
+        } else if (!settings.reduceAudio && (m as HTMLMediaElement).volume === 0.5) {
+          // Si lo desactiva, dejamos que vuelva al 100% o que el usuario lo suba
+          ;(m as HTMLMediaElement).volume = 1
+        }
+      })
+      // Subtitles
+      document.querySelectorAll("video").forEach((v) => {
+        const t = (v as HTMLVideoElement).textTracks[0]
+        if (t) {
+          t.mode = settings.autoSubtitles ? "showing" : "hidden"
+        }
+      })
+    }, 1000)
+    return () => clearInterval(id)
+  }, [settings.reduceAudio, settings.autoSubtitles])
 
   const value: A11yContextValue = {
     settings,

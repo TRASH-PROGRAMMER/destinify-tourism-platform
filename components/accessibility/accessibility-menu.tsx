@@ -372,24 +372,15 @@ export function AccessibilityMenu({ open, onOpenChange }: { open: boolean; onOpe
                   icon={<Volume2 className="h-4 w-4" />}
                   label="Reducir sonidos fuertes"
                   description="Normaliza el volumen de los vídeos"
-                  checked={false}
-                  onChange={() => {
-                    document.querySelectorAll("video, audio").forEach((m) => {
-                      ;(m as HTMLMediaElement).volume = 0.5
-                    })
-                  }}
+                  checked={settings.reduceAudio}
+                  onChange={(c) => setSetting("reduceAudio", c)}
                 />
                 <ToggleRow
                   icon={<Captions className="h-4 w-4" />}
                   label="Subtítulos automáticos"
                   description="Muestra subtítulos en los vídeos disponibles"
-                  checked={false}
-                  onChange={() => {
-                    document.querySelectorAll("video").forEach((v) => {
-                      const t = (v as HTMLVideoElement).textTracks[0]
-                      if (t) t.mode = "showing"
-                    })
-                  }}
+                  checked={settings.autoSubtitles}
+                  onChange={(c) => setSetting("autoSubtitles", c)}
                 />
               </TabsContent>
 

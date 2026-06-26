@@ -198,6 +198,7 @@ export default function BookingPage() {
       }
       if (!form.documentId.trim()) e.documentId = "Ingresa tu cédula o pasaporte."
       // Hick's Law: Removed required validation for emergency contact to reduce friction
+    }
     if (step === 2) {
       if (form.paymentMethod === "card") {
         if (!form.cardName.trim()) e.cardName = "Ingresa el nombre en la tarjeta."
