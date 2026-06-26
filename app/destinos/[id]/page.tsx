@@ -21,11 +21,14 @@ import {
   ArrowRight,
   Sparkles,
 } from "lucide-react"
+import { AccessibleMap } from "@/components/ui/accessible-map"
 
 const destinationsData: Record<string, {
   id: string
   name: string
   region: string
+  latitude: number
+  longitude: number
   description: string
   longDescription: string
   rating: number
@@ -46,6 +49,8 @@ const destinationsData: Record<string, {
     id: "galapagos",
     name: "Islas Galápagos",
     region: "Región Insular",
+    latitude: -0.6300,
+    longitude: -90.3600,
     description: "Explora la biodiversidad única del archipiélago que inspiró la teoría de la evolución.",
     longDescription: "Las Islas Galápagos son un archipiélago volcánico ubicado en el Océano Pacífico, a unos 1000 km de la costa ecuatoriana. Este extraordinario destino es conocido mundialmente por su biodiversidad única y su papel fundamental en la teoría de la evolución de Charles Darwin. Aquí podrás observar especies que no existen en ningún otro lugar del planeta, desde las famosas tortugas gigantes hasta iguanas marinas, piqueros de patas azules y leones marinos.",
     rating: 4.9,
@@ -90,6 +95,8 @@ const destinationsData: Record<string, {
     id: "quito",
     name: "Quito Centro Histórico",
     region: "Sierra",
+    latitude: -0.2298,
+    longitude: -78.5249,
     description: "Descubre el centro histórico mejor preservado de América Latina.",
     longDescription: "El Centro Histórico de Quito es uno de los mejor conservados de América Latina y fue declarado Patrimonio Cultural de la Humanidad por la UNESCO en 1978. Sus calles empedradas, iglesias coloniales y plazas históricas te transportan a otra época. Explora la majestuosa Basílica del Voto Nacional, la Iglesia de la Compañía de Jesús (considerada una de las más bellas del mundo), y disfruta de vistas panorámicas desde El Panecillo.",
     rating: 4.8,
@@ -133,6 +140,8 @@ const destinationsData: Record<string, {
     id: "banos",
     name: "Baños de Agua Santa",
     region: "Sierra",
+    latitude: -1.3963,
+    longitude: -78.4247,
     description: "Aventura extrema y aguas termales al pie del volcán Tungurahua.",
     longDescription: "Baños de Agua Santa es la capital de la aventura en Ecuador. Ubicada al pie del volcán Tungurahua, esta pequeña ciudad ofrece una combinación perfecta de adrenalina y relajación. Desde puenting en el puente de San Francisco hasta rafting en el río Pastaza, pasando por la famosa Ruta de las Cascadas con sus 60 km de paisajes impresionantes. Después de un día de aventuras, relájate en las aguas termales naturales que dan nombre a la ciudad.",
     rating: 4.7,
@@ -262,6 +271,27 @@ export default async function DestinationPage({ params }: DestinationPageProps) 
                     <Badge key={tag} variant="secondary">{tag}</Badge>
                   ))}
                 </div>
+              </section>
+
+              {/* Map */}
+              <section>
+                <h2 className="text-2xl font-bold text-foreground mb-4">Ubicación</h2>
+                <AccessibleMap
+                  lat={destination.latitude}
+                  lng={destination.longitude}
+                  zoom={11}
+                  markers={[
+                    {
+                      id: destination.id,
+                      lat: destination.latitude,
+                      lng: destination.longitude,
+                      title: destination.name,
+                      description: destination.description,
+                      alt: `Ubicación de ${destination.name} en el mapa`
+                    }
+                  ]}
+                  ariaLabel={`Mapa interactivo mostrando la ubicación de ${destination.name}`}
+                />
               </section>
 
               {/* Gallery */}

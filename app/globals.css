@@ -160,7 +160,7 @@ html {
   --a11y-line-height: 1.6;
 }
 
-/* --- Font scaling (Visión: aumentar / disminuir) --- */
+/* --- Font scaling (VisiÃ³n: aumentar / disminuir) --- */
 html[data-a11y-font-scale] {
   font-size: calc(100% * var(--a11y-font-scale));
 }
@@ -308,7 +308,7 @@ html[data-a11y-autism='true'] * {
   transition-duration: 0.001ms !important;
 }
 
-/* --- Reading guide line (resaltar línea actual) --- */
+/* --- Reading guide line (resaltar lÃ­nea actual) --- */
 .a11y-reading-guide {
   position: fixed;
   left: 0;
@@ -344,4 +344,33 @@ html[data-a11y-autism='true'] * {
 }
 .a11y-skip-link:focus {
   left: 0;
+}
+
+/* ============================================
+   LEAFLET MAPS ACCESSIBILITY
+   ============================================ */
+
+/* Focus visible para marcadores interactivos (teclado) */
+.leaflet-interactive:focus {
+  outline: 3px solid var(--ring) !important;
+  outline-offset: 2px !important;
+  border-radius: 4px;
+}
+
+/* Mejora legibilidad en los popups accesibles */
+.accessible-popup h3 {
+  margin-bottom: 0.25rem;
+  color: var(--foreground);
+}
+
+.accessible-popup p {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--muted-foreground);
+}
+
+/* Evitar que el botón de cerrar quite el foco de manera brusca al usar teclado */
+.leaflet-popup-close-button:focus-visible {
+  outline: 2px solid var(--ring) !important;
+  outline-offset: 2px !important;
 }
