@@ -44,7 +44,7 @@ import {
 } from "@/components/ui/sheet"
 import { Switch } from "@/components/ui/switch"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
-import { ScrollArea } from "@/components/ui/scroll-area"
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 import { Button } from "@/components/ui/button"
 import { useA11y } from "./a11y-provider"
 import { ToggleRow, SliderRow, OptionButtons } from "./a11y-controls"
@@ -125,7 +125,7 @@ export function AccessibilityMenu({ open, onOpenChange }: { open: boolean; onOpe
         </SheetHeader>
 
         <Tabs value={tab} onValueChange={setTab} className="flex h-[calc(100dvh-8.5rem)] flex-col">
-          <ScrollArea className="border-b border-border">
+          <div className="border-b border-border w-full overflow-x-auto whitespace-nowrap scrollbar-hide flex">
             <TabsList className="flex h-auto w-max justify-start gap-1 bg-transparent px-3 py-2">
               <TabsTrigger value="quick" className="gap-1.5 data-[state=active]:bg-secondary">
                 <Zap className="h-4 w-4" /> Rápido
@@ -149,9 +149,9 @@ export function AccessibilityMenu({ open, onOpenChange }: { open: boolean; onOpe
                 <MousePointer2 className="h-4 w-4" /> Motriz
               </TabsTrigger>
             </TabsList>
-          </ScrollArea>
+          </div>
 
-          <ScrollArea className="flex-1">
+          <div className="flex-1 overflow-y-auto">
             <div className="space-y-3 p-4">
               {/* QUICK ACTIONS */}
               <TabsContent value="quick" className="mt-0 space-y-3">
@@ -512,7 +512,7 @@ export function AccessibilityMenu({ open, onOpenChange }: { open: boolean; onOpe
                 />
               </TabsContent>
             </div>
-          </ScrollArea>
+          </div>
 
           <div className="flex items-center justify-between gap-2 border-t border-border px-4 py-3">
             <Button variant="ghost" size="sm" onClick={reset} className="gap-1.5 text-muted-foreground">
