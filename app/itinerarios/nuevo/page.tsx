@@ -9,6 +9,20 @@ import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
 import { Textarea } from "@/components/ui/textarea"
 import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import {
   MapPin,
   Calendar,
   Users,
@@ -40,6 +54,7 @@ import {
   Trash2,
   ChevronUp,
   ChevronDown,
+  Edit2,
 } from "lucide-react"
 
 const STORAGE_KEY = "destinify_itinerary_draft"
@@ -132,6 +147,11 @@ function NewItineraryContent() {
   })
 
   const [generatedItinerary, setGeneratedItinerary] = useState<{ days: Day[] } | null>(null)
+
+  // State for editing/adding activities
+  const [isActivityModalOpen, setIsActivityModalOpen] = useState(false)
+  const [editingActivityLocation, setEditingActivityLocation] = useState<{ dayIndex: number; actIndex: number } | null>(null)
+  const [editingActivityData, setEditingActivityData] = useState<Partial<Activity>>({})
 
   const headingRef = useRef<HTMLHeadingElement>(null)
   const errorSummaryRef = useRef<HTMLDivElement>(null)
@@ -337,6 +357,73 @@ function NewItineraryContent() {
       return { days }
     })
     announce("Orden de actividades actualizado.")
+  }
+
+  const openAddActivity = (dayIndex: number) => {
+    setEditingActivityLocation({ dayIndex, actIndex: -1 })
+    setEditingActivityData({
+      title: "",
+      description: "",
+      type: "activity",
+      time: "10:00",
+      duration: "1h",
+      cost: 0,
+    })
+    setIsActivityModalOpen(true)
+  }
+
+  const openEditActivity = (dayIndex: number, actIndex: number, act: Activity) => {
+    setEditingActivityLocation({ dayIndex, actIndex })
+    setEditingActivityData({ ...act })
+    setIsActivityModalOpen(true)
+  }
+
+  const handleSaveActivity = () => {
+    if (!editingActivityLocation || !generatedItinerary) return
+    const { dayIndex, actIndex } = editingActivityLocation
+    
+    setGeneratedItinerary((prev) => {
+      if (!prev) return prev
+      const days = prev.days.map((d, i) => {
+        if (i !== dayIndex) return d
+        const activities = [...d.activities]
+        
+        if (actIndex === -1) {
+          // Adding new
+          const newId = `manual-${Date.now()}`
+          activities.push({
+            id: newId,
+            title: editingActivityData.title || "Nueva actividad",
+            description: editingActivityData.description || "",
+            type: editingActivityData.type || "activity",
+            time: editingActivityData.time || "12:00",
+            duration: editingActivityData.duration || "1h",
+            cost: Number(editingActivityData.cost) || 0,
+            favorite: false,
+          })
+        } else {
+          // Editing existing
+          activities[actIndex] = {
+            ...activities[actIndex],
+            title: editingActivityData.title || activities[actIndex].title,
+            description: editingActivityData.description !== undefined ? editingActivityData.description : activities[actIndex].description,
+            type: editingActivityData.type || activities[actIndex].type,
+            time: editingActivityData.time || activities[actIndex].time,
+            duration: editingActivityData.duration || activities[actIndex].duration,
+            cost: editingActivityData.cost !== undefined ? Number(editingActivityData.cost) : activities[actIndex].cost,
+          }
+        }
+        
+        // Sort activities by time (basic sorting)
+        activities.sort((a, b) => a.time.localeCompare(b.time))
+        
+        return { ...d, activities }
+      })
+      return { days }
+    })
+    
+    announce(actIndex === -1 ? "Actividad agregada." : "Actividad actualizada.")
+    setIsActivityModalOpen(false)
   }
 
   const handleConfirm = () => {
@@ -953,6 +1040,15 @@ function NewItineraryContent() {
                                   variant="ghost"
                                   size="icon"
                                   className="h-9 w-9"
+                                  aria-label={`Editar ${activity.title}`}
+                                  onClick={() => openEditActivity(dayIndex, actIndex, activity)}
+                                >
+                                  <Edit2 className="h-4 w-4" aria-hidden="true" />
+                                </Button>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="h-9 w-9"
                                   aria-label={`Eliminar ${activity.title}`}
                                   onClick={() => removeActivity(dayIndex, activity.id)}
                                 >
@@ -980,7 +1076,7 @@ function NewItineraryContent() {
                       </li>
                     )}
                     <li>
-                      <Button variant="outline" className="w-full" size="sm">
+                      <Button variant="outline" className="w-full" size="sm" onClick={() => openAddActivity(dayIndex)}>
                         <Plus className="mr-2 h-4 w-4" aria-hidden="true" />
                         Agregar actividad manualmente
                       </Button>
@@ -1161,6 +1257,98 @@ function NewItineraryContent() {
           </section>
         )}
       </main>
+
+      {/* Edit/Add Activity Modal */}
+      <Dialog open={isActivityModalOpen} onOpenChange={setIsActivityModalOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>
+              {editingActivityLocation?.actIndex === -1 ? "Nueva Actividad" : "Editar Actividad"}
+            </DialogTitle>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="title" className="text-right">Título</Label>
+              <Input
+                id="title"
+                value={editingActivityData.title || ""}
+                onChange={(e) => setEditingActivityData({ ...editingActivityData, title: e.target.value })}
+                className="col-span-3"
+              />
+            </div>
+            <div className="grid grid-cols-4 items-start gap-4">
+              <Label htmlFor="desc" className="text-right mt-2">Descripción</Label>
+              <Textarea
+                id="desc"
+                value={editingActivityData.description || ""}
+                onChange={(e) => setEditingActivityData({ ...editingActivityData, description: e.target.value })}
+                className="col-span-3"
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="time" className="text-right">Hora</Label>
+              <Input
+                id="time"
+                type="time"
+                value={editingActivityData.time || ""}
+                onChange={(e) => setEditingActivityData({ ...editingActivityData, time: e.target.value })}
+                className="col-span-3"
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="duration" className="text-right">Duración</Label>
+              <Input
+                id="duration"
+                placeholder="ej: 1h 30m"
+                value={editingActivityData.duration || ""}
+                onChange={(e) => setEditingActivityData({ ...editingActivityData, duration: e.target.value })}
+                className="col-span-3"
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="cost" className="text-right">Costo ($)</Label>
+              <Input
+                id="cost"
+                type="number"
+                min="0"
+                value={editingActivityData.cost || 0}
+                onChange={(e) => setEditingActivityData({ ...editingActivityData, cost: Number(e.target.value) })}
+                className="col-span-3"
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="type" className="text-right">Tipo</Label>
+              <div className="col-span-3">
+                <Select
+                  value={editingActivityData.type || "activity"}
+                  onValueChange={(val) => setEditingActivityData({ ...editingActivityData, type: val })}
+                >
+                  <SelectTrigger id="type">
+                    <SelectValue placeholder="Selecciona un tipo" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="breakfast">Desayuno</SelectItem>
+                    <SelectItem value="lunch">Almuerzo</SelectItem>
+                    <SelectItem value="dinner">Cena</SelectItem>
+                    <SelectItem value="activity">Actividad</SelectItem>
+                    <SelectItem value="sightseeing">Turismo</SelectItem>
+                    <SelectItem value="hotel">Hotel</SelectItem>
+                    <SelectItem value="transport">Transporte</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsActivityModalOpen(false)}>
+              Cancelar
+            </Button>
+            <Button onClick={handleSaveActivity}>
+              Guardar cambios
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

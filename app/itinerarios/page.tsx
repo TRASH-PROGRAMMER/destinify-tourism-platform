@@ -26,7 +26,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
-const itineraries = [
+const initialItineraries = [
   {
     id: 1,
     name: "Aventura en Galápagos",
@@ -76,8 +76,26 @@ const statusConfig = {
 
 export default function ItinerariesPage() {
   const [filter, setFilter] = useState<"all" | "upcoming" | "draft" | "completed">("all")
+  const [itinerariesList, setItineraryList] = useState(initialItineraries)
 
-  const filteredItineraries = itineraries.filter(
+  const handleDuplicate = (id: number) => {
+    const itToCopy = itinerariesList.find((it) => it.id === id)
+    if (itToCopy) {
+      const copy = {
+        ...itToCopy,
+        id: Date.now(),
+        name: `${itToCopy.name} (Copia)`,
+        status: "draft", // usually copies start as drafts
+      }
+      setItineraryList([copy, ...itinerariesList])
+    }
+  }
+
+  const handleDelete = (id: number) => {
+    setItineraryList(itinerariesList.filter((it) => it.id !== id))
+  }
+
+  const filteredItineraries = itinerariesList.filter(
     (itinerary) => filter === "all" || itinerary.status === filter
   )
 
@@ -211,11 +229,11 @@ export default function ItinerariesPage() {
                                 <Edit className="h-4 w-4 mr-2" />
                                 Editar
                               </DropdownMenuItem>
-                              <DropdownMenuItem>
+                              <DropdownMenuItem onClick={() => handleDuplicate(itinerary.id)}>
                                 <Copy className="h-4 w-4 mr-2" />
                                 Duplicar
                               </DropdownMenuItem>
-                              <DropdownMenuItem className="text-destructive">
+                              <DropdownMenuItem className="text-destructive" onClick={() => handleDelete(itinerary.id)}>
                                 <Trash2 className="h-4 w-4 mr-2" />
                                 Eliminar
                               </DropdownMenuItem>

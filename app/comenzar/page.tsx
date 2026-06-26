@@ -144,7 +144,7 @@ const initialData: FormData = {
 export default function OnboardingPage() {
   const [currentStep, setCurrentStep] = useState(1)
   const [formData, setFormData] = useState<FormData>(initialData)
-  const [showErrors, setShowErrors] = useState(false)
+  const [errors, setErrors] = useState<Record<string, string>>({})
   const [restored, setRestored] = useState(false)
   const [savedAt, setSavedAt] = useState<string | null>(null)
 
@@ -199,39 +199,36 @@ export default function OnboardingPage() {
   }
 
   // --- Validación por paso (devuelve mensajes específicos) ---
-  const stepErrors = (): string[] => {
-    const errs: string[] = []
+  const validateStep = (): Record<string, string> => {
+    const errs: Record<string, string> = {}
     if (currentStep === 1) {
-      if (formData.name.trim().length < 2) errs.push("Ingresa tu nombre (mínimo 2 caracteres).")
-      if (!formData.country) errs.push("Selecciona tu país de residencia.")
-      if (!formData.travelerType) errs.push("Indica con quién sueles viajar.")
+      if (formData.name.trim().length < 2) errs.name = "Ingresa tu nombre (mínimo 2 caracteres)."
+      if (!formData.country) errs.country = "Selecciona tu país de residencia."
+      if (!formData.travelerType) errs.travelerType = "Indica con quién sueles viajar."
     } else if (currentStep === 2) {
-      if (!formData.budget) errs.push("Selecciona un rango de presupuesto.")
-      if (formData.interests.length < 2) errs.push("Elige al menos 2 intereses turísticos.")
-      if (!formData.climate) errs.push("Elige tu clima favorito.")
+      if (!formData.budget) errs.budget = "Selecciona un rango de presupuesto."
+      if (formData.interests.length < 2) errs.interests = "Elige al menos 2 intereses turísticos."
+      if (!formData.climate) errs.climate = "Elige tu clima favorito."
     } else if (currentStep === 3) {
-      if (formData.adventureLevel === 0) errs.push("Selecciona tu nivel de aventura.")
-      if (!formData.visitedBefore) errs.push("Cuéntanos si ya habías visitado Ecuador.")
+      if (formData.adventureLevel === 0) errs.adventureLevel = "Selecciona tu nivel de aventura."
+      if (!formData.visitedBefore) errs.visitedBefore = "Cuéntanos si ya habías visitado Ecuador."
     }
     return errs
   }
 
-  const errors = stepErrors()
-  const canProceed = errors.length === 0
-
   const handleNext = () => {
-    if (!canProceed) {
-      setShowErrors(true)
+    const errs = validateStep()
+    setErrors(errs)
+    if (Object.keys(errs).length > 0) {
       // anunciar errores a lectores de pantalla
       requestAnimationFrame(() => statusRef.current?.focus())
       return
     }
-    setShowErrors(false)
     if (currentStep < 3) setCurrentStep(currentStep + 1)
   }
 
   const handleBack = () => {
-    setShowErrors(false)
+    setErrors({})
     if (currentStep > 1) setCurrentStep(currentStep - 1)
   }
 
@@ -343,14 +340,14 @@ export default function OnboardingPage() {
 
         {/* Resumen de errores (visible + auditivo) */}
         <div ref={statusRef} tabIndex={-1} aria-live="assertive" className="focus-visible:outline-none">
-          {showErrors && errors.length > 0 && (
+          {Object.keys(errors).length > 0 && (
             <div role="alert" className="mb-6 rounded-xl border border-destructive/40 bg-destructive/5 p-4">
               <div className="flex items-center gap-2 font-semibold text-destructive">
                 <AlertCircle className="h-5 w-5" aria-hidden="true" />
-                Revisa estos campos antes de continuar
+                Revisa estos campos antes de continuar:
               </div>
               <ul className="mt-2 list-disc space-y-1 pl-9 text-sm text-foreground">
-                {errors.map((err) => (
+                {Object.values(errors).map((err) => (
                   <li key={err}>{err}</li>
                 ))}
               </ul>
@@ -389,13 +386,21 @@ export default function OnboardingPage() {
                   value={formData.name}
                   onChange={(e) => update("name", e.target.value)}
                   aria-required="true"
-                  aria-describedby="name-help"
+                  aria-invalid={!!errors.name}
+                  aria-describedby={errors.name ? "name-error" : "name-help"}
                   className="h-12"
                 />
-                <p id="name-help" className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                  <HelpCircle className="h-3.5 w-3.5" aria-hidden="true" />
-                  Lo usaremos para saludarte en tus itinerarios.
-                </p>
+                {errors.name ? (
+                  <p id="name-error" className="flex items-center gap-1.5 text-sm text-destructive">
+                    <AlertCircle className="h-4 w-4" aria-hidden="true" />
+                    {errors.name}
+                  </p>
+                ) : (
+                  <p id="name-help" className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                    <HelpCircle className="h-3.5 w-3.5" aria-hidden="true" />
+                    Lo usaremos para saludarte en tus itinerarios.
+                  </p>
+                )}
               </div>
 
               <div className="space-y-2">
@@ -409,6 +414,8 @@ export default function OnboardingPage() {
                   value={formData.country}
                   onChange={(e) => update("country", e.target.value)}
                   aria-required="true"
+                  aria-invalid={!!errors.country}
+                  aria-describedby={errors.country ? "country-error" : undefined}
                   className="h-12 w-full rounded-md border border-input bg-background px-3 text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   <option value="">Selecciona tu país…</option>
@@ -418,6 +425,12 @@ export default function OnboardingPage() {
                     </option>
                   ))}
                 </select>
+                {errors.country && (
+                  <p id="country-error" className="flex items-center gap-1.5 text-sm text-destructive mt-2">
+                    <AlertCircle className="h-4 w-4" aria-hidden="true" />
+                    {errors.country}
+                  </p>
+                )}
               </div>
 
               <div className="space-y-2">
@@ -472,6 +485,12 @@ export default function OnboardingPage() {
                     )
                   })}
                 </div>
+                {errors.travelerType && (
+                  <p id="travelerType-error" className="flex items-center gap-1.5 text-sm text-destructive mt-2">
+                    <AlertCircle className="h-4 w-4" aria-hidden="true" />
+                    {errors.travelerType}
+                  </p>
+                )}
               </div>
             </fieldset>
           )}
@@ -515,6 +534,12 @@ export default function OnboardingPage() {
                     )
                   })}
                 </div>
+                {errors.budget && (
+                  <p id="budget-error" className="flex items-center gap-1.5 text-sm text-destructive mt-2">
+                    <AlertCircle className="h-4 w-4" aria-hidden="true" />
+                    {errors.budget}
+                  </p>
+                )}
               </div>
 
               {/* Intereses */}
@@ -547,6 +572,12 @@ export default function OnboardingPage() {
                     )
                   })}
                 </div>
+                {errors.interests && (
+                  <p id="interest-error" className="flex items-center gap-1.5 text-sm text-destructive mt-2">
+                    <AlertCircle className="h-4 w-4" aria-hidden="true" />
+                    {errors.interests}
+                  </p>
+                )}
               </div>
 
               {/* Accesibilidad requerida (Hick's Law: Progressive Disclosure) */}
@@ -614,6 +645,12 @@ export default function OnboardingPage() {
                     )
                   })}
                 </div>
+                {errors.climate && (
+                  <p id="climate-error" className="flex items-center gap-1.5 text-sm text-destructive mt-2">
+                    <AlertCircle className="h-4 w-4" aria-hidden="true" />
+                    {errors.climate}
+                  </p>
+                )}
               </div>
             </fieldset>
           )}
@@ -680,6 +717,12 @@ export default function OnboardingPage() {
                     )
                   })}
                 </div>
+                {errors.adventureLevel && (
+                  <p id="adventureLevel-error" className="flex items-center gap-1.5 text-sm text-destructive mt-2">
+                    <AlertCircle className="h-4 w-4" aria-hidden="true" />
+                    {errors.adventureLevel}
+                  </p>
+                )}
               </div>
 
               {/* Viajes anteriores */}
@@ -713,6 +756,12 @@ export default function OnboardingPage() {
                     )
                   })}
                 </div>
+                {errors.visitedBefore && (
+                  <p id="visitedBefore-error" className="flex items-center gap-1.5 text-sm text-destructive mt-2">
+                    <AlertCircle className="h-4 w-4" aria-hidden="true" />
+                    {errors.visitedBefore}
+                  </p>
+                )}
               </div>
 
               {/* Resumen de selección */}
