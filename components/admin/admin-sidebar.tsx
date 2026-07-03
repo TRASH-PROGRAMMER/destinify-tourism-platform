@@ -3,6 +3,7 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useState } from "react"
+import { clearRoleCookie } from "@/lib/auth"
 import {
   LayoutDashboard,
   Package,
@@ -34,6 +35,13 @@ export function AdminSidebar() {
   const pathname = usePathname()
   const [mobileOpen, setMobileOpen] = useState(false)
   const unread = notifications.filter((n) => !n.read).length
+
+  function handleLogout() {
+    clearRoleCookie()
+    // Recarga completa (no navegación de cliente) para que middleware.ts
+    // vuelva a evaluar la cookie ya limpia en la siguiente petición.
+    window.location.href = "/iniciar-sesion"
+  }
 
   const NavLinks = () => (
     <nav className="flex flex-1 flex-col gap-1" aria-label="Navegación del panel">
@@ -119,11 +127,14 @@ export function AdminSidebar() {
               <p className="truncate text-xs text-muted-foreground">proveedor@lacasona.ec</p>
             </div>
           </div>
-          <Button variant="ghost" size="sm" asChild className="mt-1 w-full justify-start text-muted-foreground">
-            <Link href="/iniciar-sesion">
-              <LogOut className="mr-2 h-4 w-4" aria-hidden="true" />
-              Cerrar sesión
-            </Link>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleLogout}
+            className="mt-1 w-full justify-start text-muted-foreground"
+          >
+            <LogOut className="mr-2 h-4 w-4" aria-hidden="true" />
+            Cerrar sesión
           </Button>
         </div>
       </aside>

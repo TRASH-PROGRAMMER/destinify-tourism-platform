@@ -1,0 +1,261 @@
+diff --git a/app/iniciar-sesion/page.tsx b/app/iniciar-sesion/page.tsx
+index 41523cf..63c1fc3 100644
+--- a/app/iniciar-sesion/page.tsx
++++ b/app/iniciar-sesion/page.tsx
+@@ -16,11 +16,13 @@ import {
+   Loader2,
+   AlertCircle,
+   CheckCircle2,
++  Info,
+   ArrowLeft,
+   User,
+   Compass,
+   ShieldCheck
+ } from "lucide-react"
++import { type Role, ROLE_HOME, setRoleCookie, isSafeInternalPath, isValidRole } from "@/lib/auth"
+ 
+ type Errors = {
+   email?: string
+@@ -28,8 +30,6 @@ type Errors = {
+   form?: string
+ }
+ 
+-type Role = "viajero" | "guia" | "admin"
+-
+ const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+ 
+ export default function LoginPage() {
+@@ -42,10 +42,13 @@ export default function LoginPage() {
+   const [touched, setTouched] = useState<{ email?: boolean; password?: boolean }>({})
+   const [loading, setLoading] = useState(false)
+   const [success, setSuccess] = useState(false)
++  const [infoMessage, setInfoMessage] = useState<string | null>(null)
++  const [redirectTo, setRedirectTo] = useState<string | null>(null)
+ 
+   const emailRef = useRef<HTMLInputElement>(null)
+   const passwordRef = useRef<HTMLInputElement>(null)
+   const formErrorRef = useRef<HTMLDivElement>(null)
++  const infoRef = useRef<HTMLDivElement>(null)
+ 
+   // Recuperar correo recordado
+   useEffect(() => {
+@@ -63,6 +66,28 @@ export default function LoginPage() {
+     }
+   }, [])
+ 
++  // Si llegamos redirigidos desde una ruta protegida (ej. /admin sin sesión),
++  // preseleccionar el rol requerido y avisar por qué está aquí.
++  useEffect(() => {
++    const params = new URLSearchParams(window.location.search)
++    const requiere = params.get("requiere")
++    const redirect = params.get("redirect")
++
++    if (isSafeInternalPath(redirect)) {
++      setRedirectTo(redirect)
++    }
++
++    if (isValidRole(requiere)) {
++      setRole(requiere)
++      setInfoMessage(
++        requiere === "admin"
++          ? "Esa sección es para proveedores. Inicia sesión con una cuenta con ese rol para continuar."
++          : "Inicia sesión con el rol adecuado para acceder a esa sección.",
++      )
++      setTimeout(() => infoRef.current?.focus(), 50)
++    }
++  }, [])
++
+   function validateEmail(value: string): string | undefined {
+     if (!value.trim()) return "Ingrese su correo electrónico para continuar."
+     if (!EMAIL_REGEX.test(value.trim())) return "Ingrese un correo electrónico válido."
+@@ -139,16 +164,15 @@ export default function LoginPage() {
+       return
+     }
+ 
+-    // Éxito
++    // Éxito: fijar el rol de la sesión (ver lib/auth.ts) para que
++    // middleware.ts pueda proteger rutas como /admin.
++    setRoleCookie(role)
+     setSuccess(true)
+     setTimeout(() => {
+-      if (role === "admin") {
+-        window.location.href = "/admin"
+-      } else if (role === "guia") {
+-        window.location.href = "/guia/dashboard"
+-      } else {
+-        window.location.href = "/perfil"
+-      }
++      // Si venimos de una redirección protegida y el rol coincide, volver
++      // ahí; si no, ir al home por defecto de ese rol.
++      const destination = redirectTo && role === "admin" ? redirectTo : ROLE_HOME[role]
++      window.location.href = destination
+     }, 900)
+   }
+ 
+@@ -199,6 +223,19 @@ export default function LoginPage() {
+             </div>
+           </div>
+ 
++          {/* Aviso: llegamos redirigidos desde una ruta protegida (ej. /admin) */}
++          {infoMessage && !success && (
++            <div
++              ref={infoRef}
++              role="status"
++              tabIndex={-1}
++              className="mb-5 flex items-start gap-3 rounded-lg border border-primary/40 bg-primary/10 p-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
++            >
++              <Info className="mt-0.5 h-5 w-5 shrink-0 text-primary" aria-hidden="true" />
++              <p className="text-sm font-medium leading-relaxed text-foreground">{infoMessage}</p>
++            </div>
++          )}
++
+           {/* Mensaje de error general (credenciales / bloqueo) */}
+           {errors.form && (
+             <div
+diff --git a/components/admin/admin-sidebar.tsx b/components/admin/admin-sidebar.tsx
+index 1547ac5..02b47a6 100644
+--- a/components/admin/admin-sidebar.tsx
++++ b/components/admin/admin-sidebar.tsx
+@@ -3,6 +3,7 @@
+ import Link from "next/link"
+ import { usePathname } from "next/navigation"
+ import { useState } from "react"
++import { clearRoleCookie } from "@/lib/auth"
+ import {
+   LayoutDashboard,
+   Package,
+@@ -35,6 +36,13 @@ export function AdminSidebar() {
+   const [mobileOpen, setMobileOpen] = useState(false)
+   const unread = notifications.filter((n) => !n.read).length
+ 
++  function handleLogout() {
++    clearRoleCookie()
++    // Recarga completa (no navegación de cliente) para que middleware.ts
++    // vuelva a evaluar la cookie ya limpia en la siguiente petición.
++    window.location.href = "/iniciar-sesion"
++  }
++
+   const NavLinks = () => (
+     <nav className="flex flex-1 flex-col gap-1" aria-label="Navegación del panel">
+       {navItems.map((item) => {
+@@ -119,11 +127,14 @@ export function AdminSidebar() {
+               <p className="truncate text-xs text-muted-foreground">proveedor@lacasona.ec</p>
+             </div>
+           </div>
+-          <Button variant="ghost" size="sm" asChild className="mt-1 w-full justify-start text-muted-foreground">
+-            <Link href="/iniciar-sesion">
+-              <LogOut className="mr-2 h-4 w-4" aria-hidden="true" />
+-              Cerrar sesión
+-            </Link>
++          <Button
++            variant="ghost"
++            size="sm"
++            onClick={handleLogout}
++            className="mt-1 w-full justify-start text-muted-foreground"
++          >
++            <LogOut className="mr-2 h-4 w-4" aria-hidden="true" />
++            Cerrar sesión
+           </Button>
+         </div>
+       </aside>
+diff --git a/lib/auth.ts b/lib/auth.ts
+new file mode 100644
+index 0000000..e390d54
+--- /dev/null
++++ b/lib/auth.ts
+@@ -0,0 +1,50 @@
++/**
++ * Fuente única de verdad para roles y sesión de demostración.
++ *
++ * IMPORTANTE: esto NO es autenticación real. No hay backend que verifique
++ * credenciales ni firme el valor del rol, así que cualquiera podría editar
++ * la cookie manualmente desde el navegador. Sirve para dejar de exponer
++ * /admin a cualquier visitante sin cuenta, y como punto único donde
++ * conectar autenticación real (JWT firmado, sesión de servidor, etc.)
++ * el día que exista un backend.
++ */
++
++export type Role = "viajero" | "guia" | "admin"
++
++export const ROLE_COOKIE = "destinify_role"
++
++export const ROLE_HOME: Record<Role, string> = {
++  admin: "/admin",
++  guia: "/guia/dashboard",
++  viajero: "/perfil",
++}
++
++export function isValidRole(value: string | undefined | null): value is Role {
++  return value === "viajero" || value === "guia" || value === "admin"
++}
++
++/** Evita open-redirect: solo permite volver a una ruta interna relativa. */
++export function isSafeInternalPath(path: string | null | undefined): path is string {
++  return !!path && path.startsWith("/") && !path.startsWith("//")
++}
++
++// --- Helpers de Client Components (usan document.cookie) ---
++
++export function setRoleCookie(role: Role) {
++  if (typeof document === "undefined") return
++  // 1 día. Es una cookie legible por JS a propósito: no guarda nada sensible,
++  // solo el rol elegido en este login simulado.
++  document.cookie = `${ROLE_COOKIE}=${role}; path=/; max-age=86400; SameSite=Lax`
++}
++
++export function clearRoleCookie() {
++  if (typeof document === "undefined") return
++  document.cookie = `${ROLE_COOKIE}=; path=/; max-age=0; SameSite=Lax`
++}
++
++export function getClientRole(): Role | null {
++  if (typeof document === "undefined") return null
++  const match = document.cookie.match(new RegExp(`(?:^|; )${ROLE_COOKIE}=([^;]*)`))
++  const value = match?.[1]
++  return isValidRole(value) ? value : null
++}
+diff --git a/proxy.ts b/proxy.ts
+new file mode 100644
+index 0000000..dacd1a4
+--- /dev/null
++++ b/proxy.ts
+@@ -0,0 +1,39 @@
++import { NextResponse } from "next/server"
++import type { NextRequest } from "next/server"
++import { ROLE_COOKIE } from "@/lib/auth"
++
++/**
++ * Protección mínima de /admin.
++ *
++ * Antes de este archivo, cualquiera podía entrar directo a /admin
++ * (o refrescar la página) sin haber iniciado sesión: app/admin/layout.tsx
++ * no verificaba nada. proxy.ts corre en el servidor ANTES de renderizar
++ * (Next.js 16 lo ejecuta en runtime Node.js por defecto), así que evita
++ * el "flash" de contenido protegido que ocurriría con una verificación
++ * solo en el cliente (useEffect + redirect).
++ *
++ * Nota: hasta Next.js 15 este archivo se llamaba middleware.ts; en
++ * Next.js 16 la convención se renombró a proxy.ts (mismo comportamiento,
++ * la función ahora se llama `proxy` en vez de `middleware`).
++ *
++ * Sigue siendo una verificación de conveniencia, no seguridad real: el
++ * valor de la cookie no está firmado por un servidor. El día que exista
++ * un backend real, este es el lugar donde reemplazar la lectura de la
++ * cookie por la verificación de una sesión/JWT firmado.
++ */
++export function proxy(request: NextRequest) {
++  const role = request.cookies.get(ROLE_COOKIE)?.value
++
++  if (role !== "admin") {
++    const loginUrl = new URL("/iniciar-sesion", request.url)
++    loginUrl.searchParams.set("redirect", request.nextUrl.pathname)
++    loginUrl.searchParams.set("requiere", "admin")
++    return NextResponse.redirect(loginUrl)
++  }
++
++  return NextResponse.next()
++}
++
++export const config = {
++  matcher: ["/admin/:path*"],
++}

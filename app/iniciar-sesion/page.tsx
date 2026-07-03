@@ -16,19 +16,19 @@ import {
   Loader2,
   AlertCircle,
   CheckCircle2,
+  Info,
   ArrowLeft,
   User,
   Compass,
   ShieldCheck
 } from "lucide-react"
+import { type Role, ROLE_HOME, setRoleCookie, isSafeInternalPath, isValidRole } from "@/lib/auth"
 
 type Errors = {
   email?: string
   password?: string
   form?: string
 }
-
-type Role = "viajero" | "guia" | "admin"
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
@@ -42,10 +42,13 @@ export default function LoginPage() {
   const [touched, setTouched] = useState<{ email?: boolean; password?: boolean }>({})
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
+  const [infoMessage, setInfoMessage] = useState<string | null>(null)
+  const [redirectTo, setRedirectTo] = useState<string | null>(null)
 
   const emailRef = useRef<HTMLInputElement>(null)
   const passwordRef = useRef<HTMLInputElement>(null)
   const formErrorRef = useRef<HTMLDivElement>(null)
+  const infoRef = useRef<HTMLDivElement>(null)
 
   // Recuperar correo recordado
   useEffect(() => {
@@ -60,6 +63,28 @@ export default function LoginPage() {
       }
     } catch {
       // ignore
+    }
+  }, [])
+
+  // Si llegamos redirigidos desde una ruta protegida (ej. /admin sin sesión),
+  // preseleccionar el rol requerido y avisar por qué está aquí.
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    const requiere = params.get("requiere")
+    const redirect = params.get("redirect")
+
+    if (isSafeInternalPath(redirect)) {
+      setRedirectTo(redirect)
+    }
+
+    if (isValidRole(requiere)) {
+      setRole(requiere)
+      setInfoMessage(
+        requiere === "admin"
+          ? "Esa sección es para proveedores. Inicia sesión con una cuenta con ese rol para continuar."
+          : "Inicia sesión con el rol adecuado para acceder a esa sección.",
+      )
+      setTimeout(() => infoRef.current?.focus(), 50)
     }
   }, [])
 
@@ -139,16 +164,15 @@ export default function LoginPage() {
       return
     }
 
-    // Éxito
+    // Éxito: fijar el rol de la sesión (ver lib/auth.ts) para que
+    // middleware.ts pueda proteger rutas como /admin.
+    setRoleCookie(role)
     setSuccess(true)
     setTimeout(() => {
-      if (role === "admin") {
-        window.location.href = "/admin"
-      } else if (role === "guia") {
-        window.location.href = "/guia/dashboard"
-      } else {
-        window.location.href = "/perfil"
-      }
+      // Si venimos de una redirección protegida y el rol coincide, volver
+      // ahí; si no, ir al home por defecto de ese rol.
+      const destination = redirectTo && role === "admin" ? redirectTo : ROLE_HOME[role]
+      window.location.href = destination
     }, 900)
   }
 
@@ -198,6 +222,19 @@ export default function LoginPage() {
               </Button>
             </div>
           </div>
+
+          {/* Aviso: llegamos redirigidos desde una ruta protegida (ej. /admin) */}
+          {infoMessage && !success && (
+            <div
+              ref={infoRef}
+              role="status"
+              tabIndex={-1}
+              className="mb-5 flex items-start gap-3 rounded-lg border border-primary/40 bg-primary/10 p-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+            >
+              <Info className="mt-0.5 h-5 w-5 shrink-0 text-primary" aria-hidden="true" />
+              <p className="text-sm font-medium leading-relaxed text-foreground">{infoMessage}</p>
+            </div>
+          )}
 
           {/* Mensaje de error general (credenciales / bloqueo) */}
           {errors.form && (
