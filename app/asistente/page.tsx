@@ -35,38 +35,6 @@ const initialSuggestions = [
   { label: "Spots para fotografía en Ecuador", icon: Camera },
 ]
 
-const sampleResponses: Record<string, Message> = {
-  "galapagos": {
-    id: "resp-1",
-    role: "assistant",
-    content: "Las Islas Galápagos son un destino único en el mundo. Te recomiendo estos lugares imperdibles:\n\n**Isla Santa Cruz:** El punto de partida ideal. Visita la Estación Científica Charles Darwin y la Playa de Tortuga Bay.\n\n**Isla Isabela:** La más grande del archipiélago. No te pierdas Los Túneles y el Muro de las Lágrimas.\n\n**Isla San Cristóbal:** Perfecta para snorkel con lobos marinos en La Lobería.\n\n¿Te gustaría que te ayude a planificar un itinerario para tu visita?",
-    suggestions: [
-      { label: "Crear itinerario Galápagos", action: "/itinerarios/nuevo?destino=galapagos" },
-      { label: "Ver más sobre Galápagos", action: "/destinos/galapagos" },
-    ],
-    destinations: [
-      { id: "galapagos", name: "Islas Galápagos", image: "https://images.unsplash.com/photo-1544979590-37e9b47eb705?w=300&h=200&fit=crop" },
-    ],
-  },
-  "aventura": {
-    id: "resp-2",
-    role: "assistant",
-    content: "¡Excelente elección! Ecuador es un paraíso para los amantes de la aventura. Basándome en tu perfil, te recomiendo:\n\n**Baños de Agua Santa:** Capital de los deportes extremos. Puenting, rafting, canyoning y la famosa Ruta de las Cascadas.\n\n**Cotopaxi:** Trekking en uno de los volcanes activos más altos del mundo. Vistas espectaculares de los Andes.\n\n**Mindo:** Canopy sobre el bosque nublado, tubing en ríos cristalinos y avistamiento de colibríes.\n\nTodos estos destinos son accesibles y tienen opciones para diferentes niveles de experiencia. ¿Cuál te interesa más explorar?",
-    suggestions: [
-      { label: "Ver Baños de Agua Santa", action: "/destinos/banos" },
-      { label: "Explorar destinos de aventura", action: "/destinos?categoria=aventura" },
-    ],
-  },
-  "restaurantes": {
-    id: "resp-3",
-    role: "assistant",
-    content: "Quito tiene una escena gastronómica increíble. Aquí mis recomendaciones basadas en diferentes estilos:\n\n**Cocina tradicional:**\n- Mercado Central: Auténtico y económico\n- Café Mosaico: Vistas panorámicas de la ciudad\n- La Cuchara de San Marcos: En el Centro Histórico\n\n**Cocina contemporánea:**\n- Nuema: Cocina ecuatoriana de autor\n- Zazu: Fusión internacional con ingredientes locales\n\n**Calle La Ronda:** Perfecta para tapear y probar bocaditos tradicionales con música en vivo.\n\n¿Quieres que te reserve en alguno o que incluya opciones gastronómicas en tu itinerario?",
-    suggestions: [
-      { label: "Ver restaurantes en Quito", action: "/destinos/quito" },
-      { label: "Tour gastronómico", action: "/itinerarios/nuevo?destino=quito" },
-    ],
-  },
-}
 
 export default function AssistantPage() {
   const [messages, setMessages] = useState<Message[]>([])
@@ -152,9 +120,9 @@ export default function AssistantPage() {
     <div className="flex h-screen flex-col bg-background">
       <Header />
 
-      <main className="flex-1 flex flex-col pt-16 overflow-hidden">
+      <main className="flex-1 flex flex-col pt-16 overflow-hidden" aria-label="Conversación con el asistente de IA">
         {/* Messages Area */}
-        <div className="flex-1 overflow-y-auto">
+        <div className="flex-1 overflow-y-auto" aria-label="Historial de mensajes">
           <div className="mx-auto max-w-3xl px-4 py-8">
             {messages.length === 0 ? (
               // Welcome State
@@ -204,7 +172,7 @@ export default function AssistantPage() {
               </div>
             ) : (
               // Messages
-              <div className="space-y-6">
+              <div className="space-y-6" role="log" aria-live="polite" aria-atomic="false" aria-relevant="additions text">
                 {messages.map((message) => (
                   <div
                     key={message.id}

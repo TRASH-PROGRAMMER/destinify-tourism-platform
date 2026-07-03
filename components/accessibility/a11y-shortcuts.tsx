@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState, useCallback, useRef } from "react"
+import { useRouter } from "next/navigation"
 import { useA11y, DEFAULT_SETTINGS } from "./a11y-provider"
 import {
   Dialog,
@@ -20,35 +21,35 @@ export interface ShortcutDef {
 
 // Definition list (also used to render the help dialog)
 export const SHORTCUTS: ShortcutDef[] = [
-  // NAVEGACIÓN GLOBAL
-  { combo: "Alt + H", keys: "alt+h", label: "Ir al Inicio", category: "Navegación" },
-  { combo: "Alt + D", keys: "alt+d", label: "Ir a Destinos", category: "Navegación" },
-  { combo: "Alt + I", keys: "alt+i", label: "Ir a Itinerarios", category: "Navegación" },
-  { combo: "Alt + A", keys: "alt+a", label: "Abrir IA Asistente", category: "Navegación" },
-  { combo: "Alt + P", keys: "alt+p", label: "Ir al Perfil", category: "Navegación" },
+  // NAVEGACIÓN GLOBAL (Alt+Shift evita conflictos con navegadores/lectores)
+  { combo: "Alt + Shift + H", keys: "alt+shift+h", label: "Ir al Inicio", category: "Navegación" },
+  { combo: "Alt + Shift + D", keys: "alt+shift+d", label: "Ir a Destinos", category: "Navegación" },
+  { combo: "Alt + Shift + I", keys: "alt+shift+i", label: "Ir a Itinerarios", category: "Navegación" },
+  { combo: "Alt + Shift + A", keys: "alt+shift+a", label: "Abrir IA Asistente", category: "Navegación" },
+  { combo: "Alt + Shift + P", keys: "alt+shift+p", label: "Ir al Perfil", category: "Navegación" },
 
   // ACCESIBILIDAD GENERAL
-  { combo: "Alt + U", keys: "alt+u", label: "Abrir / cerrar el menú de accesibilidad", category: "Accesibilidad" },
-  { combo: "Alt + Y", keys: "alt+y", label: "Mostrar esta ayuda de atajos", category: "Accesibilidad" },
-  { combo: "Alt + R", keys: "alt+r", label: "Restablecer toda la accesibilidad", category: "Accesibilidad" },
-  { combo: "Alt + S", keys: "alt+s", label: "Saltar al contenido principal", category: "Accesibilidad" },
+  { combo: "Alt + Shift + U", keys: "alt+shift+u", label: "Abrir / cerrar el menú de accesibilidad", category: "Accesibilidad" },
+  { combo: "Alt + Shift + Y", keys: "alt+shift+y", label: "Mostrar esta ayuda de atajos", category: "Accesibilidad" },
+  { combo: "Alt + Shift + R", keys: "alt+shift+r", label: "Restablecer toda la accesibilidad", category: "Accesibilidad" },
+  { combo: "Alt + Shift + S", keys: "alt+shift+s", label: "Saltar al contenido principal", category: "Accesibilidad" },
 
-  { combo: "Alt + +", keys: "alt++", label: "Aumentar el tamaño del texto", category: "Visión" },
-  { combo: "Alt + -", keys: "alt+-", label: "Disminuir el tamaño del texto", category: "Visión" },
-  { combo: "Alt + 0", keys: "alt+0", label: "Restablecer el tamaño del texto", category: "Visión" },
-  { combo: "Alt + C", keys: "alt+c", label: "Activar / desactivar alto contraste", category: "Visión" },
-  { combo: "Alt + T", keys: "alt+t", label: "Cambiar entre tema claro y oscuro", category: "Visión" },
-  { combo: "Alt + E", keys: "alt+e", label: "Activar / desactivar fuente para dislexia", category: "Visión" },
-  { combo: "Alt + K", keys: "alt+k", label: "Resaltar enlaces", category: "Visión" },
+  { combo: "Alt + Shift + +", keys: "alt+shift++", label: "Aumentar el tamaño del texto", category: "Visión" },
+  { combo: "Alt + Shift + -", keys: "alt+shift+-", label: "Disminuir el tamaño del texto", category: "Visión" },
+  { combo: "Alt + Shift + 0", keys: "alt+shift+0", label: "Restablecer el tamaño del texto", category: "Visión" },
+  { combo: "Alt + Shift + C", keys: "alt+shift+c", label: "Activar / desactivar alto contraste", category: "Visión" },
+  { combo: "Alt + Shift + T", keys: "alt+shift+t", label: "Cambiar entre tema claro y oscuro", category: "Visión" },
+  { combo: "Alt + Shift + E", keys: "alt+shift+e", label: "Activar / desactivar fuente para dislexia", category: "Visión" },
+  { combo: "Alt + Shift + K", keys: "alt+shift+k", label: "Resaltar enlaces", category: "Visión" },
 
-  { combo: "Alt + L", keys: "alt+l", label: "Leer la página en voz alta", category: "Audio" },
-  { combo: "Alt + O", keys: "alt+o", label: "Pausar / reanudar la lectura", category: "Audio" },
-  { combo: "Alt + X", keys: "alt+x", label: "Detener la lectura", category: "Audio" },
-  { combo: "Alt + V", keys: "alt+v", label: "Activar / desactivar control por voz", category: "Voz" },
+  { combo: "Alt + Shift + L", keys: "alt+shift+l", label: "Leer la página en voz alta", category: "Audio" },
+  { combo: "Alt + Shift + O", keys: "alt+shift+o", label: "Pausar / reanudar la lectura", category: "Audio" },
+  { combo: "Alt + Shift + X", keys: "alt+shift+x", label: "Detener la lectura", category: "Audio" },
+  { combo: "Alt + Shift + V", keys: "alt+shift+v", label: "Activar / desactivar control por voz", category: "Voz" },
 
-  { combo: "Alt + G", keys: "alt+g", label: "Activar / desactivar guía de lectura", category: "Cognitivo" },
-  { combo: "Alt + F", keys: "alt+f", label: "Activar / desactivar modo enfoque", category: "Cognitivo" },
-  { combo: "Alt + M", keys: "alt+m", label: "Activar / desactivar resaltado de foco (teclado)", category: "Motriz" },
+  { combo: "Alt + Shift + G", keys: "alt+shift+g", label: "Activar / desactivar guía de lectura", category: "Cognitivo" },
+  { combo: "Alt + Shift + F", keys: "alt+shift+f", label: "Activar / desactivar modo enfoque", category: "Cognitivo" },
+  { combo: "Alt + Shift + M", keys: "alt+shift+m", label: "Activar / desactivar resaltado de foco (teclado)", category: "Motriz" },
 ]
 
 interface A11yShortcutsProps {
@@ -56,6 +57,7 @@ interface A11yShortcutsProps {
 }
 
 export function A11yShortcuts({ onToggleMenu }: A11yShortcutsProps) {
+  const router = useRouter()
   const {
     settings,
     setSetting,
@@ -88,13 +90,23 @@ export function A11yShortcuts({ onToggleMenu }: A11yShortcutsProps) {
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
-      if (!e.altKey) return
+      // Requerir siempre Alt+Shift para evitar conflictos con atajos nativos y lectores de pantalla
+      const isValidCombo = e.altKey && e.shiftKey && !e.ctrlKey && !e.metaKey
 
-      // Avoid hijacking typing in inputs (except our well-defined combos which use Alt)
+      if (!isValidCombo) return
+
+      // Avoid hijacking typing in inputs
       const target = e.target as HTMLElement | null
       const isTyping =
         target &&
-        (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable)
+        (target.tagName === "INPUT" || 
+         target.tagName === "TEXTAREA" || 
+         target.tagName === "SELECT" ||
+         target.isContentEditable ||
+         target.getAttribute("role") === "textbox" ||
+         target.getAttribute("role") === "searchbox" ||
+         target.getAttribute("role") === "combobox" ||
+         target.getAttribute("role") === "spinbutton")
 
       const key = e.key.toLowerCase()
       const s = settingsRef.current
@@ -106,6 +118,30 @@ export function A11yShortcuts({ onToggleMenu }: A11yShortcutsProps) {
       let handled = true
 
       switch (true) {
+        // NAVEGACIÓN GLOBAL
+        case key === "h": {
+          router.push('/')
+          announce("Navegando al inicio")
+          break
+        }
+        case key === "d":
+          router.push('/destinos')
+          announce("Navegando a destinos")
+          break
+        case key === "i":
+          router.push('/itinerarios')
+          announce("Navegando a itinerarios")
+          break
+        case key === "a":
+          router.push('/asistente')
+          announce("Abriendo IA asistente")
+          break
+        case key === "p":
+          router.push('/perfil')
+          announce("Navegando a perfil")
+          break
+          
+        // ACCESIBILIDAD
         case key === "u":
           onToggleMenu()
           announce("Menú de accesibilidad")
@@ -215,8 +251,9 @@ export function A11yShortcuts({ onToggleMenu }: A11yShortcutsProps) {
       }
 
       if (handled) {
-        // Only block default once we know it's our combo, even while typing
-        if (!isTyping || ["a", "h", "r", "s"].includes(key)) {
+        // Only block default once we know it's our combo
+        // Navigation shortcuts don't block if typing, accessibility shortcuts do
+        if (!isTyping || ["r", "s"].includes(key)) {
           e.preventDefault()
         }
       }
@@ -234,6 +271,7 @@ export function A11yShortcuts({ onToggleMenu }: A11yShortcutsProps) {
     resumeSpeech,
     toggleVoiceControl,
     announce,
+    router,
   ])
 
   const categories = Array.from(new Set(SHORTCUTS.map((s) => s.category)))

@@ -36,18 +36,35 @@ export function LanguageSwitcher() {
     setCurrentLang(code)
     localStorage.setItem("destinify-lang", code)
     document.documentElement.lang = code
-    
+
     // Forzar la traducción vía Google Translate
     const select = document.querySelector('.goog-te-combo') as HTMLSelectElement
+
     if (select) {
-      select.value = code === 'es' ? 'es' : code
-      select.dispatchEvent(new Event('change'))
+      try {
+        select.value = code
+        
+        // Validación: Si el valor no cambió, el idioma no está disponible en las opciones
+        if (select.value !== code) {
+          throw new Error("El idioma no está disponible en el widget de traducción")
+        }
+        
+        select.dispatchEvent(new Event('change'))
+        toast.success(`Idioma cambiado a ${name}`, {
+          description: "Las preferencias del sistema se han actualizado correctamente.",
+        })
+      } catch {
+        // Google Translate falló, pero el idioma se guardó localmente
+        toast.error(`Error al traducir`, {
+          description: `El idioma "${name}" se guardó pero la traducción automática no está disponible.`,
+        })
+      }
+    } else {
+      // Google Translate no está cargado (widget no disponible)
+      toast.info(`Idioma establecido a ${name}`, {
+        description: "La traducción automática no está disponible en este momento.",
+      })
     }
-    
-    // Simular el cambio en el sistema para fines de usabilidad
-    toast.success(`Idioma cambiado a ${name}`, {
-      description: "Las preferencias del sistema se han actualizado correctamente.",
-    })
   }
 
   return (

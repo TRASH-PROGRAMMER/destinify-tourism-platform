@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useMemo } from "react"
+import { useState, useMemo, Suspense } from "react"
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
@@ -135,7 +135,7 @@ const priceRanges = [
   { label: "Premium ($200+)", min: 200, max: Infinity },
 ]
 
-export default function DestinationsPage() {
+function DestinationsContent() {
   const searchParams = useSearchParams()
   const initialQuery = searchParams.get("q") || ""
   
@@ -489,5 +489,13 @@ export default function DestinationsPage() {
 
       <Footer />
     </div>
+  )
+}
+
+export default function DestinationsPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-background flex items-center justify-center text-muted-foreground">Cargando destinos...</div>}>
+      <DestinationsContent />
+    </Suspense>
   )
 }

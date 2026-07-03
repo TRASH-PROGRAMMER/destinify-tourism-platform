@@ -441,20 +441,24 @@ export default function OnboardingPage() {
                   {languages.map((lang) => {
                     const isSelected = formData.language === lang.id
                     return (
-                      <button
+                      <label
                         key={lang.id}
-                        type="button"
-                        role="radio"
-                        aria-checked={isSelected}
-                        onClick={() => update("language", lang.id)}
-                        className={`min-h-11 rounded-full border-2 px-4 py-2 text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+                        className={`cursor-pointer inline-flex items-center justify-center min-h-11 rounded-full border-2 px-4 py-2 text-sm font-medium transition-all focus-within:ring-2 focus-within:ring-ring ${
                           isSelected
                             ? "border-primary bg-primary text-primary-foreground"
                             : "border-border bg-card text-muted-foreground hover:border-primary/50"
                         }`}
                       >
+                        <input
+                          type="radio"
+                          name="language"
+                          value={lang.id}
+                          checked={isSelected}
+                          onChange={() => update("language", lang.id)}
+                          className="sr-only"
+                        />
                         {lang.name}
-                      </button>
+                      </label>
                     )
                   })}
                 </div>
@@ -464,24 +468,29 @@ export default function OnboardingPage() {
                 <Label className="text-base" id="type-label">
                   Tipo de viajero <span className="text-destructive">*</span>
                 </Label>
-                <div className="flex flex-wrap gap-2" role="radiogroup" aria-labelledby="type-label" aria-required="true">
+                <div className="flex flex-wrap gap-2" role="radiogroup" aria-labelledby="type-label" aria-required="true" aria-invalid={!!errors.travelerType}>
                   {travelerTypes.map((type) => {
                     const isSelected = formData.travelerType === type.id
                     return (
-                      <button
+                      <label
                         key={type.id}
-                        type="button"
-                        role="radio"
-                        aria-checked={isSelected}
-                        onClick={() => update("travelerType", type.id)}
-                        className={`min-h-11 rounded-full border-2 px-4 py-2 text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+                        className={`cursor-pointer inline-flex items-center justify-center min-h-11 rounded-full border-2 px-4 py-2 text-sm font-medium transition-all focus-within:ring-2 focus-within:ring-ring ${
                           isSelected
                             ? "border-primary bg-primary text-primary-foreground"
                             : "border-border bg-card text-muted-foreground hover:border-primary/50"
                         }`}
                       >
+                        <input
+                          type="radio"
+                          name="travelerType"
+                          value={type.id}
+                          checked={isSelected}
+                          onChange={() => update("travelerType", type.id)}
+                          className="sr-only"
+                          aria-describedby={errors.travelerType ? "travelerType-error" : undefined}
+                        />
                         {type.name}
-                      </button>
+                      </label>
                     )
                   })}
                 </div>
@@ -511,26 +520,31 @@ export default function OnboardingPage() {
                 <Label className="text-base" id="budget-label">
                   Presupuesto diario <span className="text-destructive">*</span>
                 </Label>
-                <div className="grid gap-3 sm:grid-cols-2" role="radiogroup" aria-labelledby="budget-label" aria-required="true">
+                <div className="grid gap-3 sm:grid-cols-2" role="radiogroup" aria-labelledby="budget-label" aria-required="true" aria-invalid={!!errors.budget}>
                   {budgetOptions.map((option) => {
                     const isSelected = formData.budget === option.id
                     return (
-                      <button
+                      <label
                         key={option.id}
-                        type="button"
-                        role="radio"
-                        aria-checked={isSelected}
-                        onClick={() => update("budget", option.id)}
-                        className={`flex flex-col items-start rounded-xl border-2 p-4 text-left transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+                        className={`cursor-pointer flex flex-col items-start rounded-xl border-2 p-4 text-left transition-all focus-within:ring-2 focus-within:ring-ring ${
                           isSelected ? "border-primary bg-primary/5" : "border-border bg-card hover:border-primary/50"
                         }`}
                       >
+                        <input
+                          type="radio"
+                          name="budget"
+                          value={option.id}
+                          checked={isSelected}
+                          onChange={() => update("budget", option.id)}
+                          className="sr-only"
+                          aria-describedby={errors.budget ? "budget-error" : undefined}
+                        />
                         <div className="flex w-full items-center justify-between">
                           <span className="font-semibold text-foreground">{option.name}</span>
                           <span className="text-sm font-medium text-primary">{option.range}</span>
                         </div>
                         <p className="mt-1 text-sm text-muted-foreground">{option.description}</p>
-                      </button>
+                      </label>
                     )
                   })}
                 </div>
@@ -550,25 +564,31 @@ export default function OnboardingPage() {
                 <p id="interest-help" className="text-xs text-muted-foreground">
                   Selecciona al menos 2. Seleccionados: {formData.interests.length}
                 </p>
-                <div className="grid grid-cols-2 gap-3 sm:grid-cols-4" role="group" aria-labelledby="interest-label" aria-describedby="interest-help">
+                <div className="grid grid-cols-2 gap-3 sm:grid-cols-4" role="group" aria-labelledby="interest-label" aria-describedby="interest-help" aria-invalid={!!errors.interests}>
                   {interests.map((interest) => {
                     const isSelected = formData.interests.includes(interest.id)
                     return (
-                      <button
+                      <label
                         key={interest.id}
-                        type="button"
-                        aria-pressed={isSelected}
-                        onClick={() => toggleArray("interests", interest.id)}
-                        className={`flex min-h-11 flex-col items-center justify-center gap-2 rounded-xl border-2 p-4 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+                        className={`cursor-pointer flex min-h-11 flex-col items-center justify-center gap-2 rounded-xl border-2 p-4 transition-all focus-within:ring-2 focus-within:ring-ring ${
                           isSelected
                             ? "border-primary bg-primary/5 text-primary"
                             : "border-border bg-card text-muted-foreground hover:border-primary/50"
                         }`}
                       >
+                        <input
+                          type="checkbox"
+                          name="interests"
+                          value={interest.id}
+                          checked={isSelected}
+                          onChange={() => toggleArray("interests", interest.id)}
+                          className="sr-only"
+                          aria-describedby={errors.interests ? "interest-error" : undefined}
+                        />
                         <interest.icon className="h-6 w-6" aria-hidden="true" />
                         <span className="text-sm font-medium">{interest.name}</span>
                         {isSelected && <Check className="h-4 w-4" aria-hidden="true" />}
-                      </button>
+                      </label>
                     )
                   })}
                 </div>
@@ -596,22 +616,27 @@ export default function OnboardingPage() {
                     {accessibilityNeeds.map((need) => {
                       const isSelected = formData.accessibility.includes(need.id)
                       return (
-                        <button
+                        <label
                           key={need.id}
-                          type="button"
-                          aria-pressed={isSelected}
-                          onClick={() => toggleArray("accessibility", need.id)}
-                          className={`flex items-start gap-3 rounded-xl border-2 p-4 text-left transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+                          className={`cursor-pointer flex items-start gap-3 rounded-xl border-2 p-4 text-left transition-all focus-within:ring-2 focus-within:ring-ring ${
                             isSelected ? "border-primary bg-primary/5" : "border-border bg-muted/30 hover:border-primary/50"
                           }`}
                         >
+                          <input
+                            type="checkbox"
+                            name="accessibility"
+                            value={need.id}
+                            checked={isSelected}
+                            onChange={() => toggleArray("accessibility", need.id)}
+                            className="sr-only"
+                          />
                           <need.icon className={`mt-0.5 h-5 w-5 shrink-0 ${isSelected ? "text-primary" : "text-muted-foreground"}`} aria-hidden="true" />
                           <span>
                             <span className="block font-medium text-foreground">{need.name}</span>
                             <span className="mt-0.5 block text-xs text-muted-foreground">{need.description}</span>
                           </span>
                           {isSelected && <Check className="ml-auto h-4 w-4 text-primary" aria-hidden="true" />}
-                        </button>
+                        </label>
                       )
                     })}
                   </div>
@@ -623,25 +648,30 @@ export default function OnboardingPage() {
                 <Label className="text-base" id="climate-label">
                   Clima favorito <span className="text-destructive">*</span>
                 </Label>
-                <div className="grid grid-cols-2 gap-3 sm:grid-cols-4" role="radiogroup" aria-labelledby="climate-label" aria-required="true">
+                <div className="grid grid-cols-2 gap-3 sm:grid-cols-4" role="radiogroup" aria-labelledby="climate-label" aria-required="true" aria-invalid={!!errors.climate}>
                   {climates.map((climate) => {
                     const isSelected = formData.climate === climate.id
                     return (
-                      <button
+                      <label
                         key={climate.id}
-                        type="button"
-                        role="radio"
-                        aria-checked={isSelected}
-                        onClick={() => update("climate", climate.id)}
-                        className={`flex min-h-11 flex-col items-center justify-center gap-2 rounded-xl border-2 p-4 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+                        className={`cursor-pointer flex min-h-11 flex-col items-center justify-center gap-2 rounded-xl border-2 p-4 transition-all focus-within:ring-2 focus-within:ring-ring ${
                           isSelected
                             ? "border-primary bg-primary/5 text-primary"
                             : "border-border bg-card text-muted-foreground hover:border-primary/50"
                         }`}
                       >
+                        <input
+                          type="radio"
+                          name="climate"
+                          value={climate.id}
+                          checked={isSelected}
+                          onChange={() => update("climate", climate.id)}
+                          className="sr-only"
+                          aria-describedby={errors.climate ? "climate-error" : undefined}
+                        />
                         <climate.icon className="h-6 w-6" aria-hidden="true" />
                         <span className="text-sm font-medium">{climate.name}</span>
-                      </button>
+                      </label>
                     )
                   })}
                 </div>
@@ -697,23 +727,28 @@ export default function OnboardingPage() {
                 <Label className="text-base" id="adv-label">
                   Nivel de aventura <span className="text-destructive">*</span>
                 </Label>
-                <div className="grid gap-3 sm:grid-cols-2" role="radiogroup" aria-labelledby="adv-label" aria-required="true">
+                <div className="grid gap-3 sm:grid-cols-2" role="radiogroup" aria-labelledby="adv-label" aria-required="true" aria-invalid={!!errors.adventureLevel}>
                   {adventureLevels.map((level) => {
                     const isSelected = formData.adventureLevel === level.id
                     return (
-                      <button
+                      <label
                         key={level.id}
-                        type="button"
-                        role="radio"
-                        aria-checked={isSelected}
-                        onClick={() => update("adventureLevel", level.id)}
-                        className={`flex flex-col items-start rounded-xl border-2 p-4 text-left transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+                        className={`cursor-pointer flex flex-col items-start rounded-xl border-2 p-4 text-left transition-all focus-within:ring-2 focus-within:ring-ring ${
                           isSelected ? "border-primary bg-primary/5" : "border-border bg-card hover:border-primary/50"
                         }`}
                       >
+                        <input
+                          type="radio"
+                          name="adventureLevel"
+                          value={level.id}
+                          checked={isSelected}
+                          onChange={() => update("adventureLevel", level.id)}
+                          className="sr-only"
+                          aria-describedby={errors.adventureLevel ? "adventureLevel-error" : undefined}
+                        />
                         <span className="font-semibold text-foreground">{level.name}</span>
                         <span className="mt-1 text-sm text-muted-foreground">{level.description}</span>
-                      </button>
+                      </label>
                     )
                   })}
                 </div>
@@ -730,7 +765,7 @@ export default function OnboardingPage() {
                 <Label className="text-base" id="visited-label">
                   ¿Habías visitado Ecuador antes? <span className="text-destructive">*</span>
                 </Label>
-                <div className="flex flex-wrap gap-2" role="radiogroup" aria-labelledby="visited-label" aria-required="true">
+                <div className="flex flex-wrap gap-2" role="radiogroup" aria-labelledby="visited-label" aria-required="true" aria-invalid={!!errors.visitedBefore}>
                   {[
                     { id: "primera", name: "Es mi primera vez" },
                     { id: "una-vez", name: "Una vez" },
@@ -739,20 +774,25 @@ export default function OnboardingPage() {
                   ].map((opt) => {
                     const isSelected = formData.visitedBefore === opt.id
                     return (
-                      <button
+                      <label
                         key={opt.id}
-                        type="button"
-                        role="radio"
-                        aria-checked={isSelected}
-                        onClick={() => update("visitedBefore", opt.id)}
-                        className={`min-h-11 rounded-full border-2 px-4 py-2 text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+                        className={`cursor-pointer inline-flex items-center justify-center min-h-11 rounded-full border-2 px-4 py-2 text-sm font-medium transition-all focus-within:ring-2 focus-within:ring-ring ${
                           isSelected
                             ? "border-primary bg-primary text-primary-foreground"
                             : "border-border bg-card text-muted-foreground hover:border-primary/50"
                         }`}
                       >
+                        <input
+                          type="radio"
+                          name="visitedBefore"
+                          value={opt.id}
+                          checked={isSelected}
+                          onChange={() => update("visitedBefore", opt.id)}
+                          className="sr-only"
+                          aria-describedby={errors.visitedBefore ? "visitedBefore-error" : undefined}
+                        />
                         {opt.name}
-                      </button>
+                      </label>
                     )
                   })}
                 </div>

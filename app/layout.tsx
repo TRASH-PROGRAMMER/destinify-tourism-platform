@@ -59,12 +59,9 @@ export default function RootLayout({
     <html lang="es" className={`${inter.variable} ${outfit.variable}`} suppressHydrationWarning>
       <body className="font-sans antialiased bg-background" suppressHydrationWarning>
         <AccessibilityWidget>
-          <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 z-[100] bg-primary text-primary-foreground px-4 py-2 rounded-md font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
-            Saltar al contenido principal
-          </a>
           {children}
+          <Toaster richColors position="top-center" />
         </AccessibilityWidget>
-        <Toaster richColors position="top-center" />
         {process.env.NODE_ENV === 'production' && <Analytics />}
         <GoogleTranslate />
       </body>

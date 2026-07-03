@@ -1,10 +1,11 @@
 'use client'
 
-import { useTheme } from 'next-themes'
+import { useA11y } from '@/components/accessibility/a11y-provider'
 import { Toaster as Sonner, ToasterProps } from 'sonner'
 
 const Toaster = ({ ...props }: ToasterProps) => {
-  const { theme = 'system' } = useTheme()
+  const { settings } = useA11y()
+  const theme = settings.theme || 'light'
 
   return (
     <Sonner
