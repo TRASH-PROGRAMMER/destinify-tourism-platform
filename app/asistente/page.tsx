@@ -117,7 +117,7 @@ export default function AssistantPage() {
   }
 
   return (
-    <div className="flex h-screen flex-col bg-background">
+    <div className="flex h-[100dvh] flex-col bg-background">
       <Header />
 
       <main className="flex-1 flex flex-col pt-16 overflow-hidden" aria-label="Conversación con el asistente de IA">

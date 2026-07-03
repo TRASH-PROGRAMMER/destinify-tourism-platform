@@ -4,6 +4,7 @@ import { useState } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import { toast } from "sonner"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import {
@@ -26,47 +27,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
-const initialItineraries = [
-  {
-    id: 1,
-    name: "Aventura en Galápagos",
-    destination: "Islas Galápagos",
-    status: "upcoming",
-    startDate: "15 Mar 2024",
-    endDate: "22 Mar 2024",
-    days: 7,
-    travelers: 2,
-    image: "https://images.unsplash.com/photo-1544979590-37e9b47eb705?w=600&h=400&fit=crop",
-    progress: 100,
-    totalCost: 2890,
-  },
-  {
-    id: 2,
-    name: "Escape Cultural Quito",
-    destination: "Quito Centro Histórico",
-    status: "draft",
-    startDate: "5 Abr 2024",
-    endDate: "8 Abr 2024",
-    days: 3,
-    travelers: 2,
-    image: "https://images.unsplash.com/photo-1619546952812-520e98064a52?w=600&h=400&fit=crop",
-    progress: 60,
-    totalCost: 450,
-  },
-  {
-    id: 3,
-    name: "Adrenalina en Baños",
-    destination: "Baños de Agua Santa",
-    status: "completed",
-    startDate: "10 Feb 2024",
-    endDate: "14 Feb 2024",
-    days: 4,
-    travelers: 4,
-    image: "https://images.unsplash.com/photo-1551632811-561732d1e306?w=600&h=400&fit=crop",
-    progress: 100,
-    totalCost: 1200,
-  },
-]
+import { initialItineraries, type Itinerary } from "@/lib/mock-data"
+import { useEffect } from "react"
 
 const statusConfig = {
   upcoming: { label: "Próximo", variant: "default" as const, color: "bg-primary" },
@@ -76,7 +38,22 @@ const statusConfig = {
 
 export default function ItinerariesPage() {
   const [filter, setFilter] = useState<"all" | "upcoming" | "draft" | "completed">("all")
-  const [itinerariesList, setItineraryList] = useState(initialItineraries)
+  const [itinerariesList, setItineraryList] = useState<Itinerary[]>([])
+
+  useEffect(() => {
+    const saved = localStorage.getItem("destinify_itineraries_list")
+    if (saved) {
+      setItineraryList(JSON.parse(saved))
+    } else {
+      setItineraryList(initialItineraries)
+      localStorage.setItem("destinify_itineraries_list", JSON.stringify(initialItineraries))
+    }
+  }, [])
+
+  const saveToStorage = (newList: Itinerary[]) => {
+    setItineraryList(newList)
+    localStorage.setItem("destinify_itineraries_list", JSON.stringify(newList))
+  }
 
   const handleDuplicate = (id: number) => {
     const itToCopy = itinerariesList.find((it) => it.id === id)
@@ -87,12 +64,21 @@ export default function ItinerariesPage() {
         name: `${itToCopy.name} (Copia)`,
         status: "draft", // usually copies start as drafts
       }
-      setItineraryList([copy, ...itinerariesList])
+      saveToStorage([copy, ...itinerariesList])
+      toast.success("Itinerario duplicado", {
+        description: `Se ha creado una copia de "${itToCopy.name}"`
+      })
     }
   }
 
   const handleDelete = (id: number) => {
-    setItineraryList(itinerariesList.filter((it) => it.id !== id))
+    const itToDelete = itinerariesList.find((it) => it.id === id)
+    saveToStorage(itinerariesList.filter((it) => it.id !== id))
+    if (itToDelete) {
+      toast.success("Itinerario eliminado", {
+        description: `El itinerario "${itToDelete.name}" ha sido eliminado`
+      })
+    }
   }
 
   const filteredItineraries = itinerariesList.filter(

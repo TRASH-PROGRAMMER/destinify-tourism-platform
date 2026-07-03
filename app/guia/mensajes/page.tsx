@@ -43,7 +43,7 @@ export default function GuiaMensajesPage() {
   }
 
   return (
-    <div className="flex flex-col h-[calc(100vh-2rem)] space-y-4 p-6 lg:p-8">
+    <div className="flex flex-col h-[calc(100dvh-2rem)] space-y-4 p-6 lg:p-8">
       <div>
         <h1 className="text-3xl font-serif font-bold tracking-tight">Mensajes</h1>
         <p className="text-muted-foreground">Comunícate con tus viajeros para afinar detalles (Rf5).</p>
