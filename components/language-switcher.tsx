@@ -23,6 +23,7 @@ const LANGUAGES = [
 
 export function LanguageSwitcher() {
   const [currentLang, setCurrentLang] = useState("es")
+  const [isGoogleLoaded, setIsGoogleLoaded] = useState(false)
 
   useEffect(() => {
     const saved = localStorage.getItem("destinify-lang")
@@ -30,62 +31,89 @@ export function LanguageSwitcher() {
       setCurrentLang(saved)
       document.documentElement.lang = saved
     }
+
+    // Detectar cuando Google Translate se carga de forma más segura
+    const checkGoogleTranslate = setInterval(() => {
+      const select = document.querySelector('.goog-te-combo') as HTMLSelectElement
+      if (select) {
+        setIsGoogleLoaded(true)
+        clearInterval(checkGoogleTranslate)
+      }
+    }, 1000)
+
+    // Limpiar después de 10 segundos si no carga para evitar consumo innecesario
+    const timeout = setTimeout(() => clearInterval(checkGoogleTranslate), 10000)
+
+    return () => {
+      clearInterval(checkGoogleTranslate)
+      clearTimeout(timeout)
+    }
   }, [])
 
-  const handleLanguageChange = (code: string, name: string) => {
+  const changeLanguage = (code: string, name: string) => {
     setCurrentLang(code)
     localStorage.setItem("destinify-lang", code)
     document.documentElement.lang = code
 
-    // Forzar la traducción vía Google Translate
     const select = document.querySelector('.goog-te-combo') as HTMLSelectElement
 
-    if (select) {
+    if (select && isGoogleLoaded) {
       try {
+        // Método más robusto: forzar el valor y disparar el evento nativo
         select.value = code
         
-        // Validación: Si el valor no cambió, el idioma no está disponible en las opciones
+        // Verificación de disponibilidad del idioma en el widget
         if (select.value !== code) {
-          throw new Error("El idioma no está disponible en el widget de traducción")
+          console.warn(`El idioma ${code} no está disponible en el widget de Google`)
+          fallbackLanguageChange(code, name)
+          return
         }
-        
-        select.dispatchEvent(new Event('change'))
+
+        const event = new Event('change', { bubbles: true })
+        select.dispatchEvent(event)
+
         toast.success(`Idioma cambiado a ${name}`, {
-          description: "Las preferencias del sistema se han actualizado correctamente.",
+          description: "La traducción automática se ha activado correctamente."
         })
-      } catch {
-        // Google Translate falló, pero el idioma se guardó localmente
-        toast.error(`Error al traducir`, {
-          description: `El idioma "${name}" se guardó pero la traducción automática no está disponible.`,
-        })
+      } catch (error) {
+        console.warn("Error al cambiar idioma con Google Translate:", error)
+        fallbackLanguageChange(code, name)
       }
     } else {
-      // Google Translate no está cargado (widget no disponible)
-      toast.info(`Idioma establecido a ${name}`, {
-        description: "La traducción automática no está disponible en este momento.",
-      })
+      fallbackLanguageChange(code, name)
     }
+  }
+
+  const fallbackLanguageChange = (code: string, name: string) => {
+    toast.info(`Idioma establecido: ${name}`, {
+      description: "La traducción automática no está disponible en este momento. Se guardó tu preferencia.",
+    })
+    // Nota: Aquí se podría integrar un sistema i18n completo (next-intl/i18next) en el futuro
   }
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" aria-label="Cambiar idioma del sistema" className="min-h-[48px] min-w-[48px]">
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          aria-label="Cambiar idioma"
+          className="min-h-[48px] min-w-[48px]"
+        >
           <Globe className="h-5 w-5" />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-48">
-        <DropdownMenuLabel>Idioma del sistema</DropdownMenuLabel>
+      <DropdownMenuContent align="end" className="w-56">
+        <DropdownMenuLabel>Seleccionar idioma</DropdownMenuLabel>
         <DropdownMenuSeparator />
         {LANGUAGES.map((lang) => (
           <DropdownMenuItem
             key={lang.code}
-            onClick={() => handleLanguageChange(lang.code, lang.name)}
+            onClick={() => changeLanguage(lang.code, lang.name)}
             className="flex min-h-[48px] items-center justify-between cursor-pointer"
-            aria-label={`Seleccionar idioma ${lang.name}`}
           >
-            <span className="flex items-center gap-2">
-              <span aria-hidden="true">{lang.flag}</span>
+            <span className="flex items-center gap-3">
+              <span className="text-lg" aria-hidden="true">{lang.flag}</span>
               {lang.name}
             </span>
             {currentLang === lang.code && <Check className="h-4 w-4 text-primary" />}
