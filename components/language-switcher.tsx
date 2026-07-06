@@ -65,7 +65,9 @@ export function LanguageSwitcher() {
         // Verificación de disponibilidad del idioma en el widget
         if (select.value !== code) {
           console.warn(`El idioma ${code} no está disponible en el widget de Google`)
-          fallbackLanguageChange(code, name)
+          toast.error(`No se pudo aplicar la traducción a ${name}`, {
+            description: "El idioma seleccionado no está disponible en el widget actual.",
+          })
           return
         }
 
@@ -77,18 +79,16 @@ export function LanguageSwitcher() {
         })
       } catch (error) {
         console.warn("Error al cambiar idioma con Google Translate:", error)
-        fallbackLanguageChange(code, name)
+        toast.error(`Error al traducir a ${name}`, {
+          description: "Hubo un problema al intentar cambiar el idioma.",
+        })
       }
     } else {
-      fallbackLanguageChange(code, name)
+      // Violación de heurística 1 corregida: Mostrar un error real en lugar de "éxito" cuando falla silenciosamente
+      toast.error(`No se pudo traducir a ${name}`, {
+        description: "El servicio de traducción no está disponible (puede estar siendo bloqueado por el navegador o una extensión).",
+      })
     }
-  }
-
-  const fallbackLanguageChange = (code: string, name: string) => {
-    toast.info(`Idioma establecido: ${name}`, {
-      description: "La traducción automática no está disponible en este momento. Se guardó tu preferencia.",
-    })
-    // Nota: Aquí se podría integrar un sistema i18n completo (next-intl/i18next) en el futuro
   }
 
   return (
