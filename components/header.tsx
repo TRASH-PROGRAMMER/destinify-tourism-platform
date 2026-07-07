@@ -16,6 +16,7 @@ import {
   ChevronRight,
 } from "lucide-react"
 import { LanguageSwitcher } from "@/components/language-switcher"
+import { HelpPanel } from "@/components/help/help-panel"
 
 const navigation = [
   { name: "Destinos", href: "/destinos", icon: Compass, shortcut: "shift+d" },
@@ -59,7 +60,7 @@ export function Header() {
           </button>
         </div>
 
-<div className="hidden lg:flex lg:gap-x-8">
+        <div className="hidden lg:flex lg:gap-x-8">
           {navigation.map((item) => (
             <Link
               key={item.name}
@@ -78,6 +79,7 @@ export function Header() {
         </div>
 
         <div className="hidden lg:flex lg:flex-1 lg:justify-end lg:gap-x-4 lg:items-center">
+          <HelpPanel />
           <LanguageSwitcher />
           {/* Hick's Law: Un solo botón principal (Comenzar), el login es secundario */}
           <Link href="/iniciar-sesion" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
@@ -107,6 +109,7 @@ export function Header() {
             <div className="mt-4 flex flex-col gap-2 pt-4 border-t border-border">
               <div className="flex items-center justify-between py-2 mb-2">
                 <span className="text-sm font-medium text-foreground">Idioma</span>
+                <HelpPanel />
                 <LanguageSwitcher />
               </div>
               <Button asChild className="w-full">
