@@ -364,6 +364,201 @@ html[data-a11y-autism='true'] * {
 }
 
 .accessible-popup p {
+  line-height: var(--a11y-line-height) !important;
+}
+
+/* --- Dyslexia / readable font --- */
+html[data-a11y-font='dyslexic'] body,
+html[data-a11y-font='dyslexic'] body * {
+  font-family: 'OpenDyslexic', var(--font-sans) !important;
+}
+html[data-a11y-font='readable'] body,
+html[data-a11y-font='readable'] body * {
+  font-family: Verdana, Tahoma, Arial, sans-serif !important;
+}
+
+/* --- High contrast --- */
+html[data-a11y-contrast='high'] {
+  --background: oklch(0 0 0);
+  --foreground: oklch(1 0 0);
+  --card: oklch(0.05 0 0);
+  --card-foreground: oklch(1 0 0);
+  --popover: oklch(0.05 0 0);
+  --popover-foreground: oklch(1 0 0);
+  --primary: oklch(0.95 0.2 110);
+  --primary-foreground: oklch(0 0 0);
+  --secondary: oklch(0.15 0 0);
+  --secondary-foreground: oklch(1 0 0);
+  --muted: oklch(0.15 0 0);
+  --muted-foreground: oklch(0.9 0 0);
+  --accent: oklch(0.95 0.2 110);
+  --accent-foreground: oklch(0 0 0);
+  --border: oklch(1 0 0);
+  --input: oklch(0.2 0 0);
+  --ring: oklch(0.95 0.2 110);
+}
+html[data-a11y-contrast='high'] img,
+html[data-a11y-contrast='high'] [role='img'] {
+  filter: contrast(1.2);
+}
+
+/* --- Colorblind filters (applied to whole document) --- */
+html[data-a11y-colorblind='protanopia'] body {
+  filter: url('#a11y-protanopia');
+}
+html[data-a11y-colorblind='deuteranopia'] body {
+  filter: url('#a11y-deuteranopia');
+}
+html[data-a11y-colorblind='tritanopia'] body {
+  filter: url('#a11y-tritanopia');
+}
+
+/* --- Highlight links --- */
+html[data-a11y-highlight-links='true'] a {
+  outline: 2px solid var(--accent) !important;
+  outline-offset: 2px;
+  background-color: color-mix(in oklch, var(--accent) 18%, transparent) !important;
+  text-decoration: underline !important;
+  text-underline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* --- Highlight interactive buttons --- */
+html[data-a11y-highlight-buttons='true'] button,
+html[data-a11y-highlight-buttons='true'] [role='button'],
+html[data-a11y-highlight-buttons='true'] input[type='submit'] {
+  outline: 2px dashed var(--primary) !important;
+  outline-offset: 2px;
+}
+
+/* --- Reduce / hide animations --- */
+html[data-a11y-animations='off'] *,
+html[data-a11y-animations='off'] *::before,
+html[data-a11y-animations='off'] *::after {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+  scroll-behavior: auto !important;
+}
+
+/* --- Disable blinking / flashing --- */
+html[data-a11y-blink='off'] * {
+  animation-name: none !important;
+}
+
+/* --- Big cursor (Motriz) --- */
+html[data-a11y-big-cursor='true'],
+html[data-a11y-big-cursor='true'] * {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'%3E%3Cpath d='M6 2l30 18-13 3 8 16-6 3-8-16-11 9z' fill='black' stroke='white' stroke-width='2'/%3E%3C/svg%3E") 4 2, auto !important;
+}
+
+/* --- Big targets (Motriz: botones grandes) --- */
+html[data-a11y-big-targets='true'] button,
+html[data-a11y-big-targets='true'] [role='button'],
+html[data-a11y-big-targets='true'] a,
+html[data-a11y-big-targets='true'] input,
+html[data-a11y-big-targets='true'] select {
+  min-height: 48px !important;
+  padding-block: 0.5rem !important;
+}
+
+/* --- Keyboard focus highlight (TAB highlight) --- */
+html[data-a11y-focus-highlight='true'] *:focus-visible {
+  outline: 4px solid var(--accent) !important;
+  outline-offset: 3px !important;
+  border-radius: 4px;
+}
+
+/* --- Cognitivo: focus / reading mask --- */
+html[data-a11y-focus-mode='true'] header nav,
+html[data-a11y-focus-mode='true'] footer,
+html[data-a11y-focus-mode='true'] aside,
+html[data-a11y-focus-mode='true'] [data-distracting='true'] {
+  opacity: 0.12;
+  transition: opacity 0.2s;
+  pointer-events: none;
+}
+html[data-a11y-focus-mode='true'] header nav:hover,
+html[data-a11y-focus-mode='true'] aside:hover {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* --- Cognitivo: hide distracting elements --- */
+html[data-a11y-hide-distractions='true'] [data-distracting='true'],
+html[data-a11y-hide-distractions='true'] video[autoplay],
+html[data-a11y-hide-distractions='true'] [data-decorative='true'] {
+  display: none !important;
+}
+
+/* --- Autism mode: soft colors, calmer UI --- */
+html[data-a11y-autism='true'] {
+  --background: oklch(0.97 0.01 230);
+  --foreground: oklch(0.30 0.02 230);
+  --primary: oklch(0.60 0.06 200);
+  --accent: oklch(0.70 0.05 150);
+}
+html[data-a11y-autism='true'] * {
+  animation: none !important;
+  transition-duration: 0.001ms !important;
+}
+
+/* --- Reading guide line (resaltar lÃ­nea actual) --- */
+.a11y-reading-guide {
+  position: fixed;
+  left: 0;
+  right: 0;
+  height: 2.2rem;
+  background: color-mix(in oklch, var(--accent) 22%, transparent);
+  border-top: 2px solid var(--accent);
+  border-bottom: 2px solid var(--accent);
+  pointer-events: none;
+  z-index: 9998;
+  transition: top 0.05s linear;
+}
+
+/* --- Word being read (Audio: resaltar palabra) --- */
+.a11y-speaking-word {
+  background-color: var(--accent) !important;
+  color: var(--accent-foreground) !important;
+  border-radius: 3px;
+  box-shadow: 0 0 0 2px var(--accent);
+}
+
+/* --- Skip link --- */
+.a11y-skip-link {
+  position: absolute;
+  left: -999px;
+  top: 0;
+  z-index: 10000;
+  padding: 0.75rem 1.25rem;
+  background: var(--primary);
+  color: var(--primary-foreground);
+  border-radius: 0 0 var(--radius) 0;
+  font-weight: 600;
+}
+.a11y-skip-link:focus {
+  left: 0;
+}
+
+/* ============================================
+   LEAFLET MAPS ACCESSIBILITY
+   ============================================ */
+
+/* Focus visible para marcadores interactivos (teclado) */
+.leaflet-interactive:focus {
+  outline: 3px solid var(--ring) !important;
+  outline-offset: 2px !important;
+  border-radius: 4px;
+}
+
+/* Mejora legibilidad en los popups accesibles */
+.accessible-popup h3 {
+  margin-bottom: 0.25rem;
+  color: var(--foreground);
+}
+
+.accessible-popup p {
   margin: 0;
   font-size: 0.875rem;
   color: var(--muted-foreground);
@@ -373,4 +568,19 @@ html[data-a11y-autism='true'] * {
 .leaflet-popup-close-button:focus-visible {
   outline: 2px solid var(--ring) !important;
   outline-offset: 2px !important;
+}
+
+/* ============================================
+   GOOGLE TRANSLATE OVERRIDES
+   ============================================ */
+
+/* Ocultar la barra superior que inyecta Google Translate */
+.goog-te-banner-frame.skiptranslate {
+  display: none !important;
+  visibility: hidden !important;
+}
+
+/* Evitar que Google Translate empuje el body hacia abajo */
+body {
+  top: 0 !important;
 }
