@@ -9,10 +9,13 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet"
-import { HelpCircle } from "lucide-react"
+import { HelpCircle, ChevronDown } from "lucide-react"
 import { AccessibleVideoPlayer } from "./accessible-video-player"
+import { useState } from "react"
 
 export function HelpPanel() {
+  const [showTranscript, setShowTranscript] = useState(false)
+
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -49,16 +52,16 @@ export function HelpPanel() {
             <h3 className="font-semibold text-lg border-b pb-2">Controles Rápidos</h3>
             <ul className="space-y-3 text-sm text-muted-foreground list-disc pl-5">
               <li>
+                <strong className="text-foreground">Audiodescripción (AD):</strong> 
+                Al activar el botón <strong>AD</strong>, el sistema narrará en voz alta qué sucede visualmente en la pantalla, ayudando a personas con discapacidad visual a no perder contexto.
+              </li>
+              <li>
                 <strong className="text-foreground">Pausar/Reproducir:</strong> 
-                Usa el botón de Play en el video o la tecla <kbd className="font-mono bg-muted px-1 rounded">Espacio</kbd> si tienes seleccionado el botón.
+                Usa el botón de Play en el video o la tecla <kbd className="font-mono bg-muted px-1 rounded">Espacio</kbd>.
               </li>
               <li>
                 <strong className="text-foreground">Narración (Voice-over):</strong> 
                 El video narrará los pasos automáticamente usando voz sintetizada. Usa el botón de Volumen para mutear.
-              </li>
-              <li>
-                <strong className="text-foreground">Subtítulos:</strong> 
-                Aparecen dinámicamente con alto contraste en pantalla para facilitar la lectura, siempre sincronizados con la voz.
               </li>
               <li>
                 <strong className="text-foreground">Navegación:</strong> 
